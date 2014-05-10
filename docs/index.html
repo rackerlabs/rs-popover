@@ -15,7 +15,7 @@
   <div class="rs-container" style="padding-top: 50px;" ng-controller="DemoController">
     <h1>Programmatic Control</h1>
     <div class="rs-btn-group">
-      <button class="rs-btn" ng-click="show()">Show</button>
+      <button class="rs-btn" ng-click="show($event)">Show</button>
     </div>
     <rs-popover popover-id="programmatic-demo">
       <div class="rs-popover-body">
@@ -60,14 +60,15 @@
     </rs-popover>
   </div>
 
-  <script type="application/javascript" src="angular.js"></script>
+  <script type="application/javascript" src="jquery/dist/jquery.js"></script>
+  <script type="application/javascript" src="angular/angular.js"></script>
   <script type="application/javascript" src="rs-popover.js"></script>
 
   <script type="application/javascript">
 
   angular.module('rsPopoverDemo', ['rsPopover']).controller('DemoController', function ($scope, registry) {
-    $scope.show = function () {
-      registry.popover('programmatic-demo').show();
+    $scope.show = function (e) {
+      registry.popover('programmatic-demo').show(angular.element(e.target));
     };
     $scope.hide = function () {
       registry.popover('programmatic-demo').hide();

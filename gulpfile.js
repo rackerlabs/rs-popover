@@ -17,7 +17,7 @@ gulp.task('clean', function () {
 
 gulp.task('connect', function () {
   return connect.server({
-    root: ['bower_components/angular', 'dist', 'docs'],
+    root: ['bower_components', 'dist', 'docs'],
     port: 8000,
     livereload: true
   });

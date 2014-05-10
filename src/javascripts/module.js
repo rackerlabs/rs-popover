@@ -3,8 +3,8 @@
 var angular = window.angular;
 
 angular.module('rsPopover', [])
-  .factory('attachment', require('./attachmentService'))
-  .service('registry', require('./popoverRegistry'))
+  .service('tether', require('./tether'))
+  .service('registry', require('./registry'))
   .controller('PopoverController', ['$scope', require('./popoverController')])
-  .directive('rsPopover', ['registry', 'attachment', require('./popoverDirective')])
+  .directive('rsPopover', ['registry', 'tether', require('./popoverDirective')])
   .directive('rsPopoverTrigger', ['registry', require('./popoverTriggerDirective')]);

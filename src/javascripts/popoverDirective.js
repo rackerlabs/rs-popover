@@ -1,4 +1,4 @@
-module.exports = function (registry, attachment) {
+module.exports = function (registry, tether) {
   'use strict';
 
   return {
@@ -20,7 +20,7 @@ module.exports = function (registry, attachment) {
 
       scope.show = function (target) {
         scope.open = true;
-        attachment.attach(target, element);
+        tether.attach(target, element);
       };
 
       scope.hide = function () {

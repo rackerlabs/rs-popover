@@ -1,12 +1,12 @@
-var PopoverRegistry = require('../../src/javascripts/popoverRegistry');
+var Registry = require('../../src/javascripts/registry');
 
-describe('popoverRegistry', function () {
+describe('Registry', function () {
   'use strict';
 
   var registry;
 
   beforeEach(function () {
-    registry = new PopoverRegistry();
+    registry = new Registry();
   });
 
   describe('register', function () {
