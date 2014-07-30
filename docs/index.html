@@ -28,7 +28,7 @@
     <p>
       <button class="rs-btn" rs-popover-trigger="declarative-demo">Show</button>
     </p>
-    <rs-popover id="declarative-demo" on-open="loadContent">
+    <rs-popover id="declarative-demo" on-open="load">
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
       <p>
         <button class="rs-btn rs-btn-link" rs-popover-trigger>Hide</button>
@@ -50,6 +50,16 @@
     <rs-popover id="nested-tier-two">
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
     </rs-popover>
+
+    <hr>
+
+    <h1>Form</h1>
+    <div class="rs-btn-group">
+      <button class="rs-btn" rs-popover-trigger="form">Form</button>
+    </div>
+    <rs-popover-form id="form" on-open="load" on-save="save" label="{ save: 'Foo', cancel: 'Var' }">
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
+    </rs-popover-form>
   </div>
 
   <script type="application/javascript" src="jquery/dist/jquery.js"></script>
@@ -60,18 +70,24 @@
 
   angular.module('rsPopoverDemo', ['rs.popover']).controller('DemoController', function ($scope, $timeout, registry) {
     $scope.show = function (e) {
-      registry.popover('programmatic-demo').show(angular.element(e.target));
+      registry.popover('programmatic-demo').open(angular.element(e.target));
     };
 
     $scope.hide = function () {
-      registry.popover('programmatic-demo').hide();
+      registry.popover('programmatic-demo').close();
     };
 
-    $scope.loadContent = function () {
+    $scope.load = function () {
       return $timeout(function () {
-        throw 'Everything is broken!';
-      }, 5000);
+        // throw 'Everything is broken!';
+      }, 1000);
     };
+
+    $scope.save = function () {
+      return $timeout(function () {
+        // throw 'Everything is broken!';
+      }, 1000);
+    }
   });
 
   </script>

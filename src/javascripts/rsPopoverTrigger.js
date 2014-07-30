@@ -10,7 +10,7 @@ angular.module('rs.popover').directive('rsPopoverTrigger', function (registry) {
       if (attrs.rsPopoverTrigger) {
         id = attrs.rsPopoverTrigger;
       } else if (popoverController) {
-        id = popoverController.id();
+        id = popoverController.id;
       } else {
         throw 'No popover ID was specified for popover trigger!';
       }
