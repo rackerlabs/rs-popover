@@ -1,24 +1,7 @@
 {
   "name": "rs-popover",
   "version": "0.0.0",
-  "license": "MIT",
-  "homepage": "http://rackerlabs.github.io/rs-popover",
-  "description": "Angular directive for Canon popovers.",
-  "author": "Brad Gignac <bgignac@bradgignac.com>",
-  "contributors": [],
-  "main": "lib/module.js",
-  "keywords": [
-    "angular",
-    "canon",
-    "rackspace"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/rackerlabs/rs-popover"
-  },
-  "bugs": {
-    "url": "https://github.com/rackerlabs/rs-popover/issues"
-  },
+  "private": true,
   "scripts": {
     "test": "gulp lint && gulp test"
   },

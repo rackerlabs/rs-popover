@@ -7,21 +7,25 @@
   "authors": [
     "Brad Gignac <bgignac@bradgignac.com>"
   ],
-  "main": "src/module.js",
   "keywords": [
     "angular",
     "canon",
     "rackspace"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rackerlabs/rs-popover"
+  },
+  "dependencies": {
+    "angular": "~1.2.19",
+    "angular-mocks": "~1.2.19",
+    "jquery": "~2.1.1"
+  },
   "ignore": [
     "**/.*",
     "bower_components",
     "node_modules",
     "test"
   ],
-  "dependencies": {
-    "angular": "~1.2.19",
-    "angular-mocks": "~1.2.19",
-    "jquery": "~2.1.1"
-  }
+  "main": "src/module.js"
 }
