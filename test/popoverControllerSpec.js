@@ -38,52 +38,6 @@ describe('rs.popover.PopoverController', function () {
     expect(scope.state.subscriptions.save).toContain(scope.onSave);
   });
 
-  describe('labels', function () {
-    it('uses provided save label', inject(function ($controller) {
-      scope.label = { save: 'shoot' };
-
-      $controller('PopoverController', {
-        $scope: scope,
-        $element: element
-      });
-
-      expect(scope.label.save).toBe('shoot');
-    }));
-
-    it('uses default save label', inject(function ($controller) {
-      scope.label = { };
-
-      $controller('PopoverController', {
-        $scope: scope,
-        $element: element
-      });
-
-      expect(scope.label.save).toBe('Save');
-    }));
-
-    it('uses provided cancel label', inject(function ($controller) {
-      scope.label = { cancel: 'score' };
-
-      $controller('PopoverController', {
-        $scope: scope,
-        $element: element
-      });
-
-      expect(scope.label.cancel).toBe('score');
-    }));
-
-    it('uses default cancel label', inject(function ($controller) {
-      scope.label = { };
-
-      $controller('PopoverController', {
-        $scope: scope,
-        $element: element
-      });
-
-      expect(scope.label.cancel).toBe('Cancel');
-    }));
-  });
-
   describe('open', function () {
     it('transitions popover to loading state', function () {
       scope.open(target);

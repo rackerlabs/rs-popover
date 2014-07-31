@@ -4,7 +4,8 @@ angular.module('rs.popover').directive('rsPopoverForm', function () {
   return {
     scope: {
       id: '@',
-      label: '=',
+      saveLabel: '@',
+      cancelLabel: '@',
       onOpen: '=',
       onSave: '='
     },

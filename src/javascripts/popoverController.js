@@ -16,8 +16,6 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
   registry.register($scope.id, $scope);
   resetState();
 
-  $scope.label = angular.extend({ save: 'Save', cancel: 'Cancel' }, $scope.label);
-
   $scope.is = function (state) {
     return this.state.is(state);
   };
