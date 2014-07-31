@@ -1,7 +1,7 @@
 angular.module('rs.popover').factory('PopoverState', function ($q) {
   'use strict';
 
-  function PopoverState(hooks) {
+  function PopoverState() {
     this.state = PopoverState.CLOSED;
     this.subscriptions = { open: [], load: [], error: [], save: [], close: [] };
   }

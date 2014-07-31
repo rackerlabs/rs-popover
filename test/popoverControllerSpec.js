@@ -20,7 +20,7 @@ describe('rs.popover.PopoverController', function () {
     spyOn(tether, 'attach');
 
     target = angular.element();
-    controller = $controller('PopoverController', {
+    $controller('PopoverController', {
       $scope: scope,
       $element: element
     });
