@@ -1,8 +1,8 @@
 # rs-popover
 
-![https://travis-ci.org/rackerlabs/rs-popover](http://img.shields.io/travis/rackerlabs/rs-popover/master.svg) 
-![https://codeclimate.com/github/rackerlabs/rs-popover](http://img.shields.io/codeclimate/github/rackerlabs/rs-popover.svg) 
-![https://codeclimate.com/github/rackerlabs/rs-popover](http://img.shields.io/codeclimate/coverage/github/rackerlabs/rs-popover.svg)
+[![Build Status](http://img.shields.io/travis/rackerlabs/rs-popover/master.svg)](https://travis-ci.org/rackerlabs/rs-popover)
+[![Code Climate](http://img.shields.io/codeclimate/github/rackerlabs/rs-popover.svg)](https://codeclimate.com/github/rackerlabs/rs-popover)
+[![Coverage](http://img.shields.io/codeclimate/coverage/github/rackerlabs/rs-popover.svg)](https://codeclimate.com/github/rackerlabs/rs-popover)
 
 Angular directive for [Canon](http://rackerlabs.github.io/canon) popovers.
 
