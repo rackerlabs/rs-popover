@@ -117,11 +117,11 @@ angular.module('my.module').controller('MyController', function (registry) {
   };
 
   $scope.show = function (e) {
-    registry.popover('somepopoverid').show(e.target);
+    registry.popover('somepopoverid').open(e.target);
   };
 
   $scope.hide = function () {
-    registry.popover('somepopoverid').hide();
+    registry.popover('somepopoverid').close();
   };
 });
 ```
