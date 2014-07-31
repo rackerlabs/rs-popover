@@ -50,6 +50,44 @@ Accepts the name of a function to be called when the popover is opened. This
 function should return a promise. A loading pattern will be displayed until the
 promise returned by this method is resolved. This attribute is optional.
 
+### `rs-popover-form`
+
+This directive defines a popover that contains a form and can be used as either 
+an element or an attribute. All instances of this attribute must have a unique 
+`id` attribute.
+
+```
+<rs-popover-form id="myPopoverForm">
+  <div class="rs-control-group">
+    <label>Label</label>
+    <div class="rs-controls">
+      <input type="text">
+    </div>
+  </div>
+</rs-popover-form>
+```
+
+#### Attributes
+
+##### `id`
+
+Accepts any unique string used to identity this popover. This attribute is 
+required and must be unique across all other elements on the page.
+
+##### `on-open`
+
+Accepts the name of a function to be called when the popover is opened. This 
+function should return a promise. A loading pattern will be displayed until the
+promise returned by this method is resolved. This attribute is optional.
+
+##### `on-save`
+
+Accepts the name of a function to be called when the popover's form is 
+submitted. This function should return a promise. The save and cancel buttons
+will be disabled until the promise returned by this method is resolved. When the
+promise resolved, the popover will be closed. When the promise throws an error, 
+the buttons will be enabled. This attribute is optional.
+
 ### `rs-popover-trigger`
 
 This directive toggles a popover's visibility and can only be used as an 
