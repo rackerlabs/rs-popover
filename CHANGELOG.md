@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.1.1 (July 31, 2014)
+
+- Fix CSS for popover so the bottom border is not transparent.
+- Fix bug where rs-popover-form threw errors when labels were not specified.
+
 ## v0.1.0 (July 31, 2014)
 
 - Initial release of rs-popover directive.

@@ -6,7 +6,8 @@ angular.module('rs.popover', []).run(function () {
   styleContent = document.createTextNode('.rs-popover-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0 } \
     .rs-popover-loading, .rs-popover-error { width: 200px; height: 140px } \
     .rs-popover-error { color: #c40022 } \
-    .rs-popover-message { width: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center;');
+    .rs-popover-message { width: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; } \
+    .rs-popover-body { margin: 0; padding: 20px }');
   styleTag = document.createElement('style');
   styleTag.type = 'text/css';
   styleTag.appendChild(styleContent);
@@ -87,8 +88,8 @@ module.run(['$templateCache', function($templateCache) {
     '      </div>\n' +
     '      <div class="rs-popover-body" ng-show="is(\'open\') || is(\'saving\')" ng-transclude></div>\n' +
     '      <div class="rs-popover-footer rs-btn-group" ng-show="is(\'open\') || is(\'saving\')">\n' +
-    '        <button class="rs-btn rs-btn-primary" ng-disabled="is(\'saving\')" ng-click="save()">{{ label.save }}</button>\n' +
-    '        <button class="rs-btn rs-btn-link" ng-hide="is(\'saving\')" ng-click="close()">{{ label.cancel }}</button>\n' +
+    '        <button class="rs-btn rs-btn-primary" ng-disabled="is(\'saving\')" ng-click="save()">{{ saveLabel || \'Save\' }}</button>\n' +
+    '        <button class="rs-btn rs-btn-link" ng-hide="is(\'saving\')" ng-click="close()">{{ cancelLabel || \'Cancel\' }}</button>\n' +
     '      </div>\n' +
     '    </form>\n' +
     '  </div>\n' +
@@ -115,31 +116,29 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
   registry.register($scope.id, $scope);
   resetState();
 
-  $scope.label = angular.extend({ save: 'Save', cancel: 'Cancel' }, $scope.label);
-
   $scope.is = function (state) {
-    return this.state.is(state);
+    return $scope.state.is(state);
   };
 
   $scope.open = function (target) {
-    this.state.open();
+    $scope.state.open();
     tether.attach($element, target);
   };
 
   $scope.close = function () {
-    this.state.close();
+    $scope.state.close();
   };
 
   $scope.toggle = function (target) {
-    if (this.state.is('closed')) {
-      this.open(target);
+    if ($scope.state.is('closed')) {
+      $scope.open(target);
     } else {
-      this.close();
+      $scope.close();
     }
   };
 
   $scope.save = function () {
-    this.state.save();
+    $scope.state.save();
   };
 });
 
@@ -259,7 +258,8 @@ angular.module('rs.popover').directive('rsPopoverForm', function () {
   return {
     scope: {
       id: '@',
-      label: '=',
+      saveLabel: '@',
+      cancelLabel: '@',
       onOpen: '=',
       onSave: '='
     },
