@@ -8,7 +8,6 @@ angular.module('rs.popover').directive('rsPopover', function () {
     },
     restrict: 'EA',
     controller: 'PopoverController',
-    controllerAs: 'ctrl',
     transclude: true,
     templateUrl: 'rsPopover.html'
   };

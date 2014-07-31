@@ -2,14 +2,18 @@
   <div class="rs-popover-overlay" ng-click="close()"></div>
   <div class="rs-popover">
     <div class="rs-popover-arrow rs-popover-arrow-top-left"></div>
-    <div class="rs-popover-content">
+    <form class="rs-popover-content">
       <div class="rs-popover-error" ng-show="is('error')">
         <div class="rs-popover-message">{{ state.message }}</div>
       </div>
       <div class="rs-popover-loading" ng-show="is('loading')">
         <div class="rs-popover-message">{{ state.message }}</div>
       </div>
-      <div class="rs-popover-body" ng-show="is('open')" ng-transclude></div>
-    </div>
+      <div class="rs-popover-body" ng-show="is('open') || is('saving')" ng-transclude></div>
+      <div class="rs-popover-footer rs-btn-group" ng-show="is('open') || is('saving')">
+        <button class="rs-btn rs-btn-primary" ng-disabled="is('saving')" ng-click="save()">{{ label.save }}</button>
+        <button class="rs-btn rs-btn-link" ng-hide="is('saving')" ng-click="close()">{{ label.cancel }}</button>
+      </div>
+    </form>
   </div>
 </div>

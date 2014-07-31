@@ -1,33 +1,46 @@
-angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, tether, Popover) {
+angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, tether, PopoverState) {
   'use strict';
 
-  registry.register($scope.id, this);
+  function resetState() {
+    var state;
 
-  this.state = new Popover($scope.onOpen);
+    state = new PopoverState();
+    state.on('open', $scope.onOpen || angular.noop);
+    state.on('save', $scope.onSave || angular.noop);
+    state.on('close', resetState);
 
-  this.id = function () {
-    return $scope.id;
-  };
+    $scope.state = state;
+  }
 
-  this.is = function (state) {
+  this.id = $scope.id;
+  registry.register($scope.id, $scope);
+  resetState();
+
+  $scope.label = angular.extend({ save: 'Save', cancel: 'Cancel' }, $scope.label);
+
+  $scope.is = function (state) {
     return this.state.is(state);
   };
 
-  this.show = function (target) {
+  $scope.open = function (target) {
     this.state.open();
     tether.attach($element, target);
   };
 
-  this.hide = function () {
-    this.state = new Popover($scope.onOpen);
+  $scope.close = function () {
+    this.state.close();
   };
 
-  this.toggle = function (target) {
+  $scope.toggle = function (target) {
     if (this.state.is('closed')) {
-      this.show(target);
+      this.open(target);
     } else {
-      this.hide();
+      this.close();
     }
+  };
+
+  $scope.save = function () {
+    this.state.save();
   };
 });
 

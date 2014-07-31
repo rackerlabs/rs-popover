@@ -5,14 +5,14 @@ angular.module('rs.popover').factory('registry', function () {
     this.popovers = {};
   }
 
-  Registry.prototype.register = function (id, controller) {
+  Registry.prototype.register = function (id, scope) {
     if (!id) {
       throw 'Popover ID must not be empty!';
     } else if (id in this.popovers) {
       throw 'Popover ID "' + id + '" has already been registered!';
     }
 
-    this.popovers[id] = controller;
+    this.popovers[id] = scope;
   };
 
   Registry.prototype.popover = function (id) {
