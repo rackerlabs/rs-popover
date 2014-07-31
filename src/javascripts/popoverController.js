@@ -16,31 +16,29 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
   registry.register($scope.id, $scope);
   resetState();
 
-  $scope.label = angular.extend({ save: 'Save', cancel: 'Cancel' }, $scope.label);
-
   $scope.is = function (state) {
-    return this.state.is(state);
+    return $scope.state.is(state);
   };
 
   $scope.open = function (target) {
-    this.state.open();
+    $scope.state.open();
     tether.attach($element, target);
   };
 
   $scope.close = function () {
-    this.state.close();
+    $scope.state.close();
   };
 
   $scope.toggle = function (target) {
-    if (this.state.is('closed')) {
-      this.open(target);
+    if ($scope.state.is('closed')) {
+      $scope.open(target);
     } else {
-      this.close();
+      $scope.close();
     }
   };
 
   $scope.save = function () {
-    this.state.save();
+    $scope.state.save();
   };
 });
 

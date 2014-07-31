@@ -11,8 +11,8 @@
       </div>
       <div class="rs-popover-body" ng-show="is('open') || is('saving')" ng-transclude></div>
       <div class="rs-popover-footer rs-btn-group" ng-show="is('open') || is('saving')">
-        <button class="rs-btn rs-btn-primary" ng-disabled="is('saving')" ng-click="save()">{{ label.save }}</button>
-        <button class="rs-btn rs-btn-link" ng-hide="is('saving')" ng-click="close()">{{ label.cancel }}</button>
+        <button class="rs-btn rs-btn-primary" ng-disabled="is('saving')" ng-click="save()">{{ saveLabel || 'Save' }}</button>
+        <button class="rs-btn rs-btn-link" ng-hide="is('saving')" ng-click="close()">{{ cancelLabel || 'Cancel' }}</button>
       </div>
     </form>
   </div>
