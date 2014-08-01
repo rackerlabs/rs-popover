@@ -25,6 +25,23 @@ describe('rs.popover.Registry', function () {
     });
   });
 
+  describe('deregister', function () {
+    it('raises exception for unregistered popover', function () {
+      expect(function () {
+        registry.deregister('unregistered');
+      }).toThrow('Popover ID "unregistered" has not been registered!');
+    });
+
+    it('removes registered popover from registry', function () {
+      registry.register('mypopover', {});
+      registry.deregister('mypopover');
+
+      expect(function () {
+        registry.popover('mypopover');
+      }).toThrow('Popover ID "mypopover" has not been registered!');
+    });
+  });
+
   describe('popover', function () {
     it('returns registered popover', function () {
       var controller;

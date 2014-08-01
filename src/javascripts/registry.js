@@ -15,6 +15,14 @@ angular.module('rs.popover').factory('registry', function () {
     this.popovers[id] = scope;
   };
 
+  Registry.prototype.deregister = function (id) {
+    if (id in this.popovers) {
+      delete this.popovers[id];
+    } else {
+      throw 'Popover ID "' + id + '" has not been registered!';
+    }
+  };
+
   Registry.prototype.popover = function (id) {
     if (id in this.popovers) {
       return this.popovers[id];

@@ -16,6 +16,10 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
   registry.register($scope.id, $scope);
   resetState();
 
+  $scope.$on('$destroy', function () {
+    registry.deregister($scope.id);
+  });
+
   $scope.is = function (state) {
     return $scope.state.is(state);
   };

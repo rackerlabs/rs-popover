@@ -13,6 +13,12 @@
 </head>
 <body>
   <div class="rs-container" style="padding-top: 50px;" ng-controller="DemoController">
+    <div class="rs-btn-group">
+      <div class="rs-btn" ng-click="$destroy()">Destroy Scope</div>
+    </div>
+
+    <hr>
+
     <h1>Programmatic Control</h1>
     <div class="rs-btn-group">
       <button class="rs-btn" ng-click="show($event)">Show</button>
