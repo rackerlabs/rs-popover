@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.1.2 (August 1, 2014)
+
+- Remove popovers from registry when their scope is destroyed.
+
 ## v0.1.1 (July 31, 2014)
 
 - Fix CSS for popover so the bottom border is not transparent.

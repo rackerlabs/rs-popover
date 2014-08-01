@@ -1,6 +1,6 @@
 {
   "name": "rs-popover",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "license": "MIT",
   "homepage": "http://rackerlabs.github.io/rs-popover",
   "description": "Angular directive for Canon popovers.",
