@@ -15,6 +15,7 @@ describe('rs.popover.PopoverController', function () {
 
     registry = _registry_;
     spyOn(registry, 'register');
+    spyOn(registry, 'deregister');
 
     tether = _tether_;
     spyOn(tether, 'attach');
@@ -28,6 +29,12 @@ describe('rs.popover.PopoverController', function () {
 
   it('registers popover', function () {
     expect(registry.register).toHaveBeenCalledWith('mypopover', scope);
+  });
+
+  it('deregisters popover', function () {
+    scope.$destroy();
+
+    expect(registry.deregister).toHaveBeenCalledWith('mypopover');
   });
 
   it('registers open hook with state', function () {
