@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.1.3 (August 11, 2014)
+
+- Focus the first input when popover form loads.
+
 ## v0.1.2 (August 1, 2014)
 
 - Remove popovers from registry when their scope is destroyed.

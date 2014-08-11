@@ -264,7 +264,7 @@ angular.module('rs.popover').directive('rsPopover', function () {
   };
 });
 
-angular.module('rs.popover').directive('rsPopoverForm', function () {
+angular.module('rs.popover').directive('rsPopoverForm', function ($timeout) {
   'use strict';
 
   return {
@@ -278,7 +278,17 @@ angular.module('rs.popover').directive('rsPopoverForm', function () {
     restrict: 'EA',
     controller: 'PopoverController',
     transclude: true,
-    templateUrl: 'rsPopoverForm.html'
+    templateUrl: 'rsPopoverForm.html',
+    link: function (scope, element) {
+      scope.state.on('load', function () {
+        $timeout(function () {
+          var focusable;
+
+          focusable = element.find(':input').first();
+          focusable.focus();
+        }, 0, false);
+      });
+    }
   };
 });
 
