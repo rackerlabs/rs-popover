@@ -12,11 +12,6 @@ angular.module('rs.popover').directive('rsPopoverForm', function ($timeout, focu
     restrict: 'EA',
     controller: 'PopoverController',
     transclude: true,
-    templateUrl: 'rsPopoverForm.html',
-    link: function (scope, element) {
-      scope.state.on('load', function () {
-        focus(element);
-      });
-    }
+    templateUrl: 'rsPopoverForm.html'
   };
 });
