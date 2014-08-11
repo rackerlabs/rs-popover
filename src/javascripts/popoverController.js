@@ -1,4 +1,4 @@
-angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, tether, PopoverState) {
+angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, tether, focus, PopoverState) {
   'use strict';
 
   function resetState() {
@@ -8,8 +8,13 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
     state.on('open', $scope.onOpen || angular.noop);
     state.on('save', $scope.onSave || angular.noop);
     state.on('close', resetState);
+    state.on('load', focusForm);
 
     $scope.state = state;
+  }
+
+  function focusForm() {
+    focus($element);
   }
 
   this.id = $scope.id;

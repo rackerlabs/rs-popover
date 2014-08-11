@@ -1,4 +1,4 @@
-angular.module('rs.popover').directive('rsPopoverForm', function ($timeout) {
+angular.module('rs.popover').directive('rsPopoverForm', function () {
   'use strict';
 
   return {
@@ -12,16 +12,6 @@ angular.module('rs.popover').directive('rsPopoverForm', function ($timeout) {
     restrict: 'EA',
     controller: 'PopoverController',
     transclude: true,
-    templateUrl: 'rsPopoverForm.html',
-    link: function (scope, element) {
-      scope.state.on('load', function () {
-        $timeout(function () {
-          var focusable;
-
-          focusable = element.find(':input').first();
-          focusable.focus();
-        }, 0, false);
-      });
-    }
+    templateUrl: 'rsPopoverForm.html'
   };
 });
