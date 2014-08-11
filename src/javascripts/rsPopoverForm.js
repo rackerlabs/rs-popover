@@ -1,4 +1,4 @@
-angular.module('rs.popover').directive('rsPopoverForm', function ($timeout, focus) {
+angular.module('rs.popover').directive('rsPopoverForm', function () {
   'use strict';
 
   return {
