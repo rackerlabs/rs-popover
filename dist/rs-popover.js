@@ -98,7 +98,20 @@ module.run(['$templateCache', function($templateCache) {
 }]);
 })();
 
-angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, tether, PopoverState) {
+angular.module('rs.popover').factory('focus', function ($timeout) {
+  'use strict';
+
+  return function focus(element, invokeApply) {
+    return $timeout(function () {
+      var focusableElement;
+
+      focusableElement = element.find(':input').first();
+      focusableElement.focus();
+    }, 0, invokeApply || false);
+  };
+});
+
+angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, tether, focus, PopoverState) {
   'use strict';
 
   function resetState() {
@@ -108,8 +121,13 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
     state.on('open', $scope.onOpen || angular.noop);
     state.on('save', $scope.onSave || angular.noop);
     state.on('close', resetState);
+    state.on('load', focusForm);
 
     $scope.state = state;
+  }
+
+  function focusForm() {
+    focus($element);
   }
 
   this.id = $scope.id;
@@ -264,7 +282,7 @@ angular.module('rs.popover').directive('rsPopover', function () {
   };
 });
 
-angular.module('rs.popover').directive('rsPopoverForm', function ($timeout) {
+angular.module('rs.popover').directive('rsPopoverForm', function () {
   'use strict';
 
   return {
@@ -278,17 +296,7 @@ angular.module('rs.popover').directive('rsPopoverForm', function ($timeout) {
     restrict: 'EA',
     controller: 'PopoverController',
     transclude: true,
-    templateUrl: 'rsPopoverForm.html',
-    link: function (scope, element) {
-      scope.state.on('load', function () {
-        $timeout(function () {
-          var focusable;
-
-          focusable = element.find(':input').first();
-          focusable.focus();
-        }, 0, false);
-      });
-    }
+    templateUrl: 'rsPopoverForm.html'
   };
 });
 

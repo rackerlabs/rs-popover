@@ -1,6 +1,6 @@
 {
   "name": "rs-popover",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "scripts": {
     "test": "gulp lint && gulp test"

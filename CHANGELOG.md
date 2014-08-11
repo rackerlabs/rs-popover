@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.1.4 (August 11, 2014)
+
+- Focus the first input on subsequent popover loads.
+
 ## v0.1.3 (August 11, 2014)
 
 - Focus the first input when popover form loads.
