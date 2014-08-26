@@ -27,5 +27,5 @@
     "node_modules",
     "test"
   ],
-  "main": "src/module.js"
+  "main": "src/javascripts/module.js"
 }
