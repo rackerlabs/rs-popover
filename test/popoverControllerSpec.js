@@ -1,48 +1,51 @@
 describe('rs.popover.PopoverController', function () {
   'use strict';
 
-  var scope, element, registry, tether, target;
+  var scope, element, tether, target;
 
   beforeEach(module('rs.popover'));
 
-  beforeEach(inject(function ($rootScope, $controller, _registry_, _tether_) {
+  beforeEach(inject(function ($rootScope, $controller, _tether_) {
     scope = $rootScope.$new();
     scope.id = 'mypopover';
     scope.onOpen = jasmine.createSpy('onOpen');
     scope.onSave = jasmine.createSpy('onSave');
 
     element = angular.element('<div></div>');
-
-    registry = _registry_;
-    spyOn(registry, 'register');
-    spyOn(registry, 'deregister');
+    target = angular.element('<div></div>');
 
     tether = _tether_;
     spyOn(tether, 'attach');
 
-    target = angular.element();
     $controller('PopoverController', {
       $scope: scope,
       $element: element
     });
   }));
 
-  it('registers popover', function () {
-    expect(registry.register).toHaveBeenCalledWith('mypopover', scope);
-  });
+  describe('registration', function () {
+    var registry;
+    
+    beforeEach(inject(function ($controller, _registry_) {
+      registry = _registry_;
+      spyOn(registry, 'register');
+      spyOn(registry, 'deregister');
 
-  it('deregisters popover', function () {
-    scope.$destroy();
+      $controller('PopoverController', {
+        $scope: scope,
+        $element: element
+      });
+    }));
 
-    expect(registry.deregister).toHaveBeenCalledWith('mypopover');
-  });
+    it('registers popover', function () {
+      expect(registry.register).toHaveBeenCalledWith('mypopover', scope);
+    });
 
-  it('registers open hook with state', function () {
-    expect(scope.state.subscriptions.open).toContain(scope.onOpen);
-  });
+    it('deregisters popover', function () {
+      scope.$destroy();
 
-  it('registers save hook with state', function () {
-    expect(scope.state.subscriptions.save).toContain(scope.onSave);
+      expect(registry.deregister).toHaveBeenCalledWith('mypopover');
+    });
   });
 
   describe('open', function () {
@@ -56,6 +59,12 @@ describe('rs.popover.PopoverController', function () {
       scope.open(target);
 
       expect(tether.attach).toHaveBeenCalledWith(element, target);
+    });
+
+    it('calls onOpen hook', function () {
+      scope.open(target);
+
+      expect(scope.onOpen).toHaveBeenCalled();
     });
   });
 
@@ -99,10 +108,40 @@ describe('rs.popover.PopoverController', function () {
   });
 
   describe('save', function () {
-    it('transitions popover to saving state', function () {
-      scope.save();
+    describe('when form is valid', function () {
+      beforeEach(function () {
+        scope.form = { $valid: true };
+      });
 
-      expect(scope.is('saving')).toBe(true);
+      it('transitions popover to saving state when ', function () {
+        scope.save();
+
+        expect(scope.is('saving')).toBe(true);
+      });
+
+      it('calls onSave hook', function () {
+        scope.save(target);
+
+        expect(scope.onSave).toHaveBeenCalled();
+      });
+    });
+
+    describe('when form is invalid', function () {
+      beforeEach(function () {
+        scope.form = { $valid: false };
+      });
+
+      it('transitions popover to saving state when ', function () {
+        scope.save();
+
+        expect(scope.is('saving')).toBe(false);
+      });
+
+      it('calls onSave hook', function () {
+        scope.save(target);
+
+        expect(scope.onSave).not.toHaveBeenCalled();
+      });
     });
   });
 });

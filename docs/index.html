@@ -19,6 +19,27 @@
 
     <hr>
 
+    <h1>Form</h1>
+    <div class="rs-btn-group">
+      <button class="rs-btn" rs-popover-trigger="form">Form</button>
+    </div>
+    <rs-popover-form id="form" class="rs-form" on-open="load" on-save="save">
+      <ng-form name="form">
+        <div class="rs-control-group" ng-class="{ error: form.name.$dirty && !form.name.$valid }">
+          <label for="form.name" class="rs-control-label">Name</label>
+          <div class="controls">
+            <input id="form.name" type="text" ng-model="data.name" name="name" required>
+            <span class="rs-validation-block" ng-show="form.name.$dirty && form.name.$error.required">
+              <i class="rs-validation-indicator"></i>
+              Name is required
+            </span>
+          </div>
+        </div>
+      </ng-form>
+    </rs-popover-form>
+
+    <hr>
+
     <h1>Programmatic Control</h1>
     <div class="rs-btn-group">
       <button class="rs-btn" ng-click="show($event)">Show</button>
@@ -56,17 +77,6 @@
     <rs-popover id="nested-tier-two">
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
     </rs-popover>
-
-    <hr>
-
-    <h1>Form</h1>
-    <div class="rs-btn-group">
-      <button class="rs-btn" rs-popover-trigger="form">Form</button>
-    </div>
-    <rs-popover-form id="form" on-open="load" on-save="save">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
-      <p><input type="text"></p>
-    </rs-popover-form>
   </div>
 
   <script type="application/javascript" src="jquery/dist/jquery.js"></script>
@@ -76,6 +86,8 @@
   <script type="application/javascript">
 
   angular.module('rsPopoverDemo', ['rs.popover']).controller('DemoController', function ($scope, $timeout, registry) {
+    $scope.data = {};
+
     $scope.show = function (e) {
       registry.popover('programmatic-demo').open(angular.element(e.target));
     };
@@ -87,13 +99,13 @@
     $scope.load = function () {
       return $timeout(function () {
         // throw 'Everything is broken!';
-      }, 1000);
+      }, 250);
     };
 
     $scope.save = function () {
       return $timeout(function () {
         // throw 'Everything is broken!';
-      }, 1000);
+      }, 250);
     }
   });
 
