@@ -2,7 +2,7 @@
   <div class="rs-popover-overlay" ng-click="close()"></div>
   <div class="rs-popover">
     <div class="rs-popover-arrow rs-popover-arrow-top-left"></div>
-    <form class="rs-popover-content">
+    <form name="form" class="rs-popover-content" novalidate>
       <div class="rs-popover-error" ng-show="is('error')">
         <div class="rs-popover-message">{{ state.message }}</div>
       </div>
