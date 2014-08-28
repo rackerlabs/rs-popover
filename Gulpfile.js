@@ -1,6 +1,7 @@
 /* global require */
 
 var gulp = require('gulp');
+var annotate = require('gulp-ng-annotate');
 var concat = require('gulp-concat');
 var jshint = require('gulp-jshint');
 var html2js = require('gulp-ng-html2js');
@@ -49,6 +50,7 @@ gulp.task('build:concat', ['clean'], function () {
 
   return merge(javascripts, templates)
     .pipe(sourcemaps.init())
+      .pipe(annotate())
       .pipe(concat('rs-popover.js'))
     .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest('dist'));
@@ -63,6 +65,7 @@ gulp.task('build:min', ['clean'], function () {
 
   return merge(javascripts, templates)
     .pipe(sourcemaps.init())
+      .pipe(annotate())
       .pipe(concat('rs-popover.min.js'))
       .pipe(uglify())
     .pipe(sourcemaps.write('.'))
