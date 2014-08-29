@@ -79,7 +79,7 @@ module.run(['$templateCache', function($templateCache) {
     '  <div class="rs-popover-overlay" ng-click="close()"></div>\n' +
     '  <div class="rs-popover">\n' +
     '    <div class="rs-popover-arrow rs-popover-arrow-top-left"></div>\n' +
-    '    <form class="rs-popover-content">\n' +
+    '    <form name="form" class="rs-popover-content" novalidate>\n' +
     '      <div class="rs-popover-error" ng-show="is(\'error\')">\n' +
     '        <div class="rs-popover-message">{{ state.message }}</div>\n' +
     '      </div>\n' +
@@ -98,7 +98,7 @@ module.run(['$templateCache', function($templateCache) {
 }]);
 })();
 
-angular.module('rs.popover').factory('focus', function ($timeout) {
+angular.module('rs.popover').factory('focus', ["$timeout", function ($timeout) {
   'use strict';
 
   return function focus(element, invokeApply) {
@@ -109,9 +109,9 @@ angular.module('rs.popover').factory('focus', function ($timeout) {
       focusableElement.focus();
     }, 0, invokeApply || false);
   };
-});
+}]);
 
-angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, tether, focus, PopoverState) {
+angular.module('rs.popover').controller('PopoverController', ["$scope", "$element", "registry", "tether", "focus", "PopoverState", function ($scope, $element, registry, tether, focus, PopoverState) {
   'use strict';
 
   function resetState() {
@@ -128,6 +128,17 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
 
   function focusForm() {
     focus($element);
+  }
+
+  function forceValidation() {
+    $element.find(':input').each(function (i, element) {
+      var modelCtrl;
+
+      modelCtrl = $(element).controller('ngModel');
+      if (modelCtrl) {
+        modelCtrl.$setViewValue(modelCtrl.$viewValue);
+      }
+    });
   }
 
   this.id = $scope.id;
@@ -160,12 +171,16 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
   };
 
   $scope.save = function () {
-    $scope.state.save();
+    forceValidation();
+
+    if ($scope.form.$valid) {
+      $scope.state.save();
+    }
   };
-});
+}]);
 
 
-angular.module('rs.popover').factory('PopoverState', function ($q) {
+angular.module('rs.popover').factory('PopoverState', ["$q", function ($q) {
   'use strict';
 
   function PopoverState() {
@@ -229,7 +244,7 @@ angular.module('rs.popover').factory('PopoverState', function ($q) {
   PopoverState.SAVING = 'saving';
 
   return PopoverState;
-});
+}]);
 
 angular.module('rs.popover').factory('registry', function () {
   'use strict';
@@ -300,7 +315,7 @@ angular.module('rs.popover').directive('rsPopoverForm', function () {
   };
 });
 
-angular.module('rs.popover').directive('rsPopoverTrigger', function (registry) {
+angular.module('rs.popover').directive('rsPopoverTrigger', ["registry", function (registry) {
   'use strict';
 
   return {
@@ -325,10 +340,10 @@ angular.module('rs.popover').directive('rsPopoverTrigger', function (registry) {
       });
     }
   };
-});
+}]);
 
 
-angular.module('rs.popover').factory('tether', function ($window, Attachment) {
+angular.module('rs.popover').factory('tether', ["$window", "Attachment", function ($window, Attachment) {
   'use strict';
 
   function Tether() {
@@ -367,6 +382,6 @@ angular.module('rs.popover').factory('tether', function ($window, Attachment) {
   };
 
   return new Tether();
-});
+}]);
 
 //# sourceMappingURL=rs-popover.js.map
