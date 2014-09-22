@@ -19,6 +19,19 @@
 
     <hr>
 
+    <h1>Declarative Control</h1>
+    <p>
+      <button class="rs-btn" rs-popover-trigger="declarative-demo">Show</button>
+    </p>
+    <rs-popover id="declarative-demo" attach="left-top" on-open="load">
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
+      <p>
+        <button class="rs-btn rs-btn-link" rs-popover-trigger>Hide</button>
+      </p>
+    </rs-popover>
+
+    <hr>
+
     <h1>Form</h1>
     <div class="rs-btn-group">
       <button class="rs-btn" rs-popover-trigger="form">Form</button>
@@ -37,30 +50,6 @@
         </div>
       </ng-form>
     </rs-popover-form>
-
-    <hr>
-
-    <h1>Programmatic Control</h1>
-    <div class="rs-btn-group">
-      <button class="rs-btn" ng-click="show($event)">Show</button>
-    </div>
-    <rs-popover id="programmatic-demo">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
-      <p><button class="rs-btn rs-btn-link" ng-click="hide()">Hide</button></p>
-    </rs-popover>
-
-    <hr>
-
-    <h1>Declarative Control</h1>
-    <p>
-      <button class="rs-btn" rs-popover-trigger="declarative-demo">Show</button>
-    </p>
-    <rs-popover id="declarative-demo" on-open="load">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
-      <p>
-        <button class="rs-btn rs-btn-link" rs-popover-trigger>Hide</button>
-      </p>
-    </rs-popover>
 
     <hr>
 

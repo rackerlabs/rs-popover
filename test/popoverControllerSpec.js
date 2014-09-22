@@ -8,6 +8,7 @@ describe('rs.popover.PopoverController', function () {
   beforeEach(inject(function ($rootScope, $controller, _tether_) {
     scope = $rootScope.$new();
     scope.id = 'mypopover';
+    scope.attach = 'left-top';
     scope.onOpen = jasmine.createSpy('onOpen');
     scope.onSave = jasmine.createSpy('onSave');
 
@@ -25,7 +26,7 @@ describe('rs.popover.PopoverController', function () {
 
   describe('registration', function () {
     var registry;
-    
+
     beforeEach(inject(function ($controller, _registry_) {
       registry = _registry_;
       spyOn(registry, 'register');
@@ -58,7 +59,7 @@ describe('rs.popover.PopoverController', function () {
     it('tethers element to target', function () {
       scope.open(target);
 
-      expect(tether.attach).toHaveBeenCalledWith(element, target);
+      expect(tether.attach).toHaveBeenCalledWith(element, target, 'left-top');
     });
 
     it('calls onOpen hook', function () {
