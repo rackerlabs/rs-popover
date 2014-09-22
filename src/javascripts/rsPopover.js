@@ -4,11 +4,15 @@ angular.module('rs.popover').directive('rsPopover', function () {
   return {
     scope: {
       id: '@',
+      attach: '@',
       onOpen: '='
     },
     restrict: 'EA',
     controller: 'PopoverController',
     transclude: true,
-    templateUrl: 'rsPopover.html'
+    templateUrl: 'rsPopover.html',
+    compile: function (element, attributes) {
+      attributes.attach = attributes.attach || 'top-left';
+    }
   };
 });

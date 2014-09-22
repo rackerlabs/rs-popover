@@ -42,10 +42,23 @@ attribute. All instances of this attribute must have a unique `id` attribute.
 
 ##### `id`
 
+Type: `String`, Required
+
 Accepts any unique string used to identity this popover. This attribute is 
 required and must be unique across all other elements on the page.
 
+##### `attach`
+
+Type: `String`, Default: `top-left`
+
+Specifies how popovers will be oriented in relation to their target.
+
+- `attach="left-top"` - Position the target to the left of the popover.
+- `attach="top-left"` - Position the target to the top left of the popover.
+
 ##### `on-open`
+
+Type: `Expression`, Default: `''`
 
 Accepts the name of a function to be called when the popover is opened. This 
 function should return a promise. A loading pattern will be displayed until the
@@ -72,16 +85,31 @@ an element or an attribute. All instances of this attribute must have a unique
 
 ##### `id`
 
+Type: `String`, Required
+
 Accepts any unique string used to identity this popover. This attribute is 
 required and must be unique across all other elements on the page.
 
+##### `attach`
+
+Type: `String`, Default: `top-left`
+
+Specifies how popovers will be oriented in relation to their target.
+
+- `attach="left-top"` - Position the target to the left of the popover.
+- `attach="top-left"` - Position the target to the top left of the popover.
+
 ##### `on-open`
+
+Type: `Expression`, Default: `''`
 
 Accepts the name of a function to be called when the popover is opened. This 
 function should return a promise. A loading pattern will be displayed until the
 promise returned by this method is resolved. This attribute is optional.
 
 ##### `on-save`
+
+Type: `Expression`, Default: `''`
 
 Accepts the name of a function to be called when the popover's form is 
 submitted. This function should return a promise. The save and cancel buttons
@@ -101,6 +129,8 @@ attribute.
 #### Attributes
 
 ##### `rs-popover-trigger`
+
+Type: `String`, Required
 
 Accepts the ID of the popover it should toggle. If this attribute is used inside
 of a popover, it defaults to toggling the containing popover.

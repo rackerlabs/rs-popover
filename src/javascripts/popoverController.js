@@ -8,13 +8,11 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
     state.on('open', $scope.onOpen || angular.noop);
     state.on('save', $scope.onSave || angular.noop);
     state.on('close', resetState);
-    state.on('load', focusForm);
+    state.on('load', function () {
+      focus($element);
+    });
 
     $scope.state = state;
-  }
-
-  function focusForm() {
-    focus($element);
   }
 
   function forceValidation() {
@@ -32,6 +30,12 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
   registry.register($scope.id, $scope);
   resetState();
 
+  $scope.styles = {
+    'rs-popover-arrow': true,
+    'rs-popover-arrow-top-left': $scope.attach === 'top-left',
+    'rs-popover-arrow-left-top': $scope.attach === 'left-top'
+  };
+
   $scope.$on('$destroy', function () {
     registry.deregister($scope.id);
   });
@@ -42,7 +46,7 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
 
   $scope.open = function (target) {
     $scope.state.open();
-    tether.attach($element, target);
+    tether.attach($element, target, $scope.attach);
   };
 
   $scope.close = function () {

@@ -7,10 +7,10 @@ angular.module('rs.popover').factory('tether', function ($window, Attachment) {
     angular.element($window).on('resize scroll', angular.bind(this, this.reposition));
   }
 
-  Tether.prototype.attach = function (element, target) {
+  Tether.prototype.attach = function (element, target, attachmentPoint) {
     var attachment;
 
-    attachment = new Attachment(element, target);
+    attachment = new Attachment(element, target, attachmentPoint);
     attachment.position();
 
     this.attachments.push(attachment);
