@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.2.0 (September 22, 2014)
+
+- Add support "top-left" attachment point.
+- Fix bug where popover overlay did not scroll with page.
+
 ## v0.1.4 (August 11, 2014)
 
 - Focus the first input on subsequent popover loads.

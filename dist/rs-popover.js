@@ -3,7 +3,7 @@ angular.module('rs.popover', []).run(function () {
 
   var styleContent, styleTag;
 
-  styleContent = document.createTextNode('.rs-popover-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; opacity: 0 } \
+  styleContent = document.createTextNode('.rs-popover-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0 } \
     .rs-popover-loading, .rs-popover-error { width: 200px; height: 140px } \
     .rs-popover-error { color: #c40022 } \
     .rs-popover-message { width: 100%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; } \
@@ -26,7 +26,7 @@ module.run(['$templateCache', function($templateCache) {
     '<div class="rs-popover-wrapper" ng-hide="is(\'closed\')">\n' +
     '  <div class="rs-popover-overlay" ng-click="close()"></div>\n' +
     '  <div class="rs-popover">\n' +
-    '    <div class="rs-popover-arrow rs-popover-arrow-top-left"></div>\n' +
+    '    <div ng-class="{{ styles }}"></div>\n' +
     '    <div class="rs-popover-content">\n' +
     '      <div class="rs-popover-error" ng-show="is(\'error\')">\n' +
     '        <div class="rs-popover-message">{{ state.message }}</div>\n' +
@@ -45,24 +45,34 @@ module.run(['$templateCache', function($templateCache) {
 angular.module('rs.popover').factory('Attachment', function () {
   'use strict';
 
-  var VERTICAL_OFFSET = 11;
-  var HORIZONTAL_OFFSET = -33;
+  var ARROW_SIZE = 11;
+  var ARROW_OFFSET = -33;
 
-  function Attachment(element, target) {
+  function Attachment(element, target, attachmentPoint) {
     this.element = element;
     this.target = target;
+    this.attachmentPoint = attachmentPoint;
   }
 
   Attachment.prototype.position = function () {
     var position, popoverElement;
 
     position = this.target.offset();
-    position.top += this.target.outerHeight() + VERTICAL_OFFSET;
-    position.left += this.target.outerWidth() / 2 + HORIZONTAL_OFFSET;
+
+    if (this.attachmentPoint === Attachment.TOP_LEFT) {
+      position.top += this.target.outerHeight() + ARROW_SIZE;
+      position.left += this.target.outerWidth() / 2 + ARROW_OFFSET;
+    } else {
+      position.top += this.target.outerHeight() / 2 + ARROW_OFFSET;
+      position.left += this.target.outerWidth() + ARROW_SIZE;
+    }
 
     popoverElement = $('.rs-popover', this.element).first();
     popoverElement.css({ top: position.top, left: position.left });
   };
+
+  Attachment.LEFT_TOP = 'left-top';
+  Attachment.TOP_LEFT = 'top-left';
 
   return Attachment;
 });
@@ -78,7 +88,7 @@ module.run(['$templateCache', function($templateCache) {
     '<div class="rs-popover-wrapper" ng-hide="is(\'closed\')">\n' +
     '  <div class="rs-popover-overlay" ng-click="close()"></div>\n' +
     '  <div class="rs-popover">\n' +
-    '    <div class="rs-popover-arrow rs-popover-arrow-top-left"></div>\n' +
+    '    <div ng-class="{{ styles }}"></div>\n' +
     '    <form name="form" class="rs-popover-content" novalidate>\n' +
     '      <div class="rs-popover-error" ng-show="is(\'error\')">\n' +
     '        <div class="rs-popover-message">{{ state.message }}</div>\n' +
@@ -121,13 +131,11 @@ angular.module('rs.popover').controller('PopoverController', ["$scope", "$elemen
     state.on('open', $scope.onOpen || angular.noop);
     state.on('save', $scope.onSave || angular.noop);
     state.on('close', resetState);
-    state.on('load', focusForm);
+    state.on('load', function () {
+      focus($element);
+    });
 
     $scope.state = state;
-  }
-
-  function focusForm() {
-    focus($element);
   }
 
   function forceValidation() {
@@ -145,6 +153,12 @@ angular.module('rs.popover').controller('PopoverController', ["$scope", "$elemen
   registry.register($scope.id, $scope);
   resetState();
 
+  $scope.styles = {
+    'rs-popover-arrow': true,
+    'rs-popover-arrow-top-left': $scope.attach === 'top-left',
+    'rs-popover-arrow-left-top': $scope.attach === 'left-top'
+  };
+
   $scope.$on('$destroy', function () {
     registry.deregister($scope.id);
   });
@@ -155,7 +169,7 @@ angular.module('rs.popover').controller('PopoverController', ["$scope", "$elemen
 
   $scope.open = function (target) {
     $scope.state.open();
-    tether.attach($element, target);
+    tether.attach($element, target, $scope.attach);
   };
 
   $scope.close = function () {
@@ -288,12 +302,16 @@ angular.module('rs.popover').directive('rsPopover', function () {
   return {
     scope: {
       id: '@',
+      attach: '@',
       onOpen: '='
     },
     restrict: 'EA',
     controller: 'PopoverController',
     transclude: true,
-    templateUrl: 'rsPopover.html'
+    templateUrl: 'rsPopover.html',
+    compile: function (element, attributes) {
+      attributes.attach = attributes.attach || 'top-left';
+    }
   };
 });
 
@@ -303,6 +321,7 @@ angular.module('rs.popover').directive('rsPopoverForm', function () {
   return {
     scope: {
       id: '@',
+      attach: '@',
       saveLabel: '@',
       cancelLabel: '@',
       onOpen: '=',
@@ -311,7 +330,10 @@ angular.module('rs.popover').directive('rsPopoverForm', function () {
     restrict: 'EA',
     controller: 'PopoverController',
     transclude: true,
-    templateUrl: 'rsPopoverForm.html'
+    templateUrl: 'rsPopoverForm.html',
+    compile: function (element, attributes) {
+      attributes.attach = attributes.attach || 'top-left';
+    }
   };
 });
 
@@ -352,10 +374,10 @@ angular.module('rs.popover').factory('tether', ["$window", "Attachment", functio
     angular.element($window).on('resize scroll', angular.bind(this, this.reposition));
   }
 
-  Tether.prototype.attach = function (element, target) {
+  Tether.prototype.attach = function (element, target, attachmentPoint) {
     var attachment;
 
-    attachment = new Attachment(element, target);
+    attachment = new Attachment(element, target, attachmentPoint);
     attachment.position();
 
     this.attachments.push(attachment);
