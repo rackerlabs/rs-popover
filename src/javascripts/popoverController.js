@@ -1,6 +1,31 @@
 angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, tether, focus, PopoverState) {
   'use strict';
 
+  function forEachBoundInput(callback) {
+    $element.find(':input').each(function (i, element) {
+      var modelController;
+
+      element = $(element);
+      modelController = element.controller('ngModel');
+
+      if (modelController) {
+        callback.call(this, element, modelController);
+      }
+    });
+  }
+
+  function resetValidation() {
+    forEachBoundInput(function (element, controller) {
+      controller.$setUntouched();
+    });
+  }
+
+  function forceValidation() {
+    forEachBoundInput(function (element, controller) {
+      controller.$setTouched();
+    });
+  }
+
   function resetState() {
     var state;
 
@@ -12,18 +37,9 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
       focus($element);
     });
 
+    resetValidation();
+
     $scope.state = state;
-  }
-
-  function forceValidation() {
-    $element.find(':input').each(function (i, element) {
-      var modelCtrl;
-
-      modelCtrl = $(element).controller('ngModel');
-      if (modelCtrl) {
-        modelCtrl.$setViewValue(modelCtrl.$viewValue);
-      }
-    });
   }
 
   this.id = $scope.id;
