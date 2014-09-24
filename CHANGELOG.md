@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v0.2.1 (September 24, 2014)
+
+- BREAKING: rs-popover-form now requires Angular 1.3.
+- Use $touched to trigger validation instead of $dirty.
+- Reset validation every time the popover is closed.
+
 ## v0.2.0 (September 22, 2014)
 
 - Add support "top-left" attachment point.
