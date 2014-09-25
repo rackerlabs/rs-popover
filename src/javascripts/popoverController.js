@@ -1,30 +1,5 @@
-angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, tether, focus, PopoverState) {
+angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, form, tether, focus, PopoverState) {
   'use strict';
-
-  function forEachBoundInput(callback) {
-    $element.find(':input').each(function (i, element) {
-      var modelController;
-
-      element = $(element);
-      modelController = element.controller('ngModel');
-
-      if (modelController) {
-        callback.call(this, element, modelController);
-      }
-    });
-  }
-
-  function resetValidation() {
-    forEachBoundInput(function (element, controller) {
-      controller.$setUntouched();
-    });
-  }
-
-  function forceValidation() {
-    forEachBoundInput(function (element, controller) {
-      controller.$setTouched();
-    });
-  }
 
   function resetState() {
     var state;
@@ -33,11 +8,12 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
     state.on('open', $scope.onOpen || angular.noop);
     state.on('save', $scope.onSave || angular.noop);
     state.on('close', resetState);
+    state.on('close', function () {
+      form.reset($element, $scope.form);
+    });
     state.on('load', function () {
       focus($element);
     });
-
-    resetValidation();
 
     $scope.state = state;
   }
@@ -78,7 +54,7 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
   };
 
   $scope.save = function () {
-    forceValidation();
+    form.validate($element, $scope.form);
 
     if ($scope.form.$valid) {
       $scope.state.save();
