@@ -121,33 +121,48 @@ angular.module('rs.popover').factory('focus', ["$timeout", function ($timeout) {
   };
 }]);
 
-angular.module('rs.popover').controller('PopoverController', ["$scope", "$element", "registry", "tether", "focus", "PopoverState", function ($scope, $element, registry, tether, focus, PopoverState) {
+angular.module('rs.popover').factory('form', function () {
   'use strict';
 
-  function forEachBoundInput(callback) {
-    $element.find(':input').each(function (i, element) {
-      var modelController;
+  function reset(element, form) {
+    form.$setPristine();
+  }
 
-      element = $(element);
-      modelController = element.controller('ngModel');
+  function validate(element) {
+    element = angular.element(element);
+    element.find(':input').each(function (i, element) {
+      var controller;
 
-      if (modelController) {
-        callback.call(this, element, modelController);
+      element = angular.element(element);
+      controller = element.controller('ngModel');
+
+      if (!controller) {
+        return;
+      }
+
+      /*
+      HACK: We need a way to force validation on fields that haven't been
+      interacted with, so we change the view value from `undefined` to an empty
+      string using $setViewValue. However, this only works the first time
+      validation is forced, so we need to alternate between setting `undefined`
+      and an empty string.
+      */
+      if (controller.$viewValue === undefined) {
+        controller.$setViewValue('');
+      } else if (controller.$viewValue === '') {
+        controller.$setViewValue(undefined);
       }
     });
   }
 
-  function resetValidation() {
-    forEachBoundInput(function (element, controller) {
-      controller.$setUntouched();
-    });
-  }
+  return {
+    reset: reset,
+    validate: validate
+  };
+});
 
-  function forceValidation() {
-    forEachBoundInput(function (element, controller) {
-      controller.$setTouched();
-    });
-  }
+angular.module('rs.popover').controller('PopoverController', ["$scope", "$element", "registry", "form", "tether", "focus", "PopoverState", function ($scope, $element, registry, form, tether, focus, PopoverState) {
+  'use strict';
 
   function resetState() {
     var state;
@@ -156,11 +171,12 @@ angular.module('rs.popover').controller('PopoverController', ["$scope", "$elemen
     state.on('open', $scope.onOpen || angular.noop);
     state.on('save', $scope.onSave || angular.noop);
     state.on('close', resetState);
+    state.on('close', function () {
+      form.reset($element, $scope.form);
+    });
     state.on('load', function () {
       focus($element);
     });
-
-    resetValidation();
 
     $scope.state = state;
   }
@@ -201,7 +217,7 @@ angular.module('rs.popover').controller('PopoverController', ["$scope", "$elemen
   };
 
   $scope.save = function () {
-    forceValidation();
+    form.validate($element, $scope.form);
 
     if ($scope.form.$valid) {
       $scope.state.save();

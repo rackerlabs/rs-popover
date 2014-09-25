@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.2.2 (September 25, 2014)
+
+- Revert to using $dirty to trigger validation.
+- Update development dependencies.
+
 ## v0.2.1 (September 24, 2014)
 
 - BREAKING: rs-popover-form now requires Angular 1.3.
