@@ -1,19 +1,24 @@
 describe('rs.popover.PopoverController', function () {
   'use strict';
 
-  var scope, element, tether, target;
+  var scope, element, form, tether, target;
 
   beforeEach(module('rs.popover'));
 
-  beforeEach(inject(function ($rootScope, $controller, _tether_) {
+  beforeEach(inject(function ($rootScope, $controller, _form_, _tether_) {
     scope = $rootScope.$new();
     scope.id = 'mypopover';
     scope.attach = 'left-top';
+    scope.form = {};
     scope.onOpen = jasmine.createSpy('onOpen');
     scope.onSave = jasmine.createSpy('onSave');
 
     element = angular.element('<div></div>');
     target = angular.element('<div></div>');
+
+    form = _form_;
+    spyOn(form, 'reset');
+    spyOn(form, 'validate');
 
     tether = _tether_;
     spyOn(tether, 'attach');
@@ -25,28 +30,17 @@ describe('rs.popover.PopoverController', function () {
   }));
 
   describe('registration', function () {
-    var registry;
-
-    beforeEach(inject(function ($controller, _registry_) {
-      registry = _registry_;
-      spyOn(registry, 'register');
-      spyOn(registry, 'deregister');
-
-      $controller('PopoverController', {
-        $scope: scope,
-        $element: element
-      });
+    it('registers popover', inject(function (registry) {
+      expect(registry.popover('mypopover')).toBe(scope);
     }));
 
-    it('registers popover', function () {
-      expect(registry.register).toHaveBeenCalledWith('mypopover', scope);
-    });
-
-    it('deregisters popover', function () {
+    it('deregisters popover', inject(function (registry) {
       scope.$destroy();
 
-      expect(registry.deregister).toHaveBeenCalledWith('mypopover');
-    });
+      expect(function () {
+        registry.popover('mypopover');
+      }).toThrow();
+    }));
   });
 
   describe('open', function () {
@@ -76,42 +70,43 @@ describe('rs.popover.PopoverController', function () {
 
       expect(scope.is('closed')).toBe(true);
     });
+
+    it('resets form', function () {
+      scope.open(target);
+      scope.close();
+
+      expect(form.reset).toHaveBeenCalledWith(element, scope.form);
+    });
   });
 
   describe('toggle', function () {
-    beforeEach(function () {
-      spyOn(scope, 'open');
-      spyOn(scope, 'close');
-
-      scope.state = {};
-      scope.state.is = jasmine.createSpy('is');
-    });
-
     it('opens popover when it is closed', function () {
-      scope.state.is.andCallFake(function (state) {
-        return state === 'closed';
-      });
+      scope.close();
 
       scope.toggle(target);
 
-      expect(scope.open).toHaveBeenCalledWith(target);
+      expect(scope.is('loading')).toBe(true);
     });
 
     it('closes popover when it is not closed', function () {
-      scope.state.is.andCallFake(function (state) {
-        return state !== 'closed';
-      });
+      scope.open();
 
       scope.toggle(target);
 
-      expect(scope.close).toHaveBeenCalledWith();
+      expect(scope.is('closed')).toBe(true);
     });
   });
 
   describe('save', function () {
+    it('forces validation', function () {
+      scope.save();
+
+      expect(form.validate).toHaveBeenCalledWith(element, scope.form);
+    });
+
     describe('when form is valid', function () {
       beforeEach(function () {
-        scope.form = { $valid: true };
+        scope.form.$valid = true;
       });
 
       it('transitions popover to saving state when ', function () {
@@ -129,7 +124,7 @@ describe('rs.popover.PopoverController', function () {
 
     describe('when form is invalid', function () {
       beforeEach(function () {
-        scope.form = { $valid: false };
+        scope.form.$valid = false;
       });
 
       it('transitions popover to saving state when ', function () {
