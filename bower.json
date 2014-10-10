@@ -5,7 +5,8 @@
   "homepage": "http://rackerlabs.github.io/rs-popover",
   "description": "Angular directive for Canon popovers.",
   "authors": [
-    "Brad Gignac <bgignac@bradgignac.com>"
+    "Brad Gignac <bgignac@bradgignac.com>",
+	"Matt Brown <matt.brown@rackspace.com>"
   ],
   "keywords": [
     "angular",
