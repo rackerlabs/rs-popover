@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://eafdbc63c97ce6bec9ef-b0a668e5876bef6fe25684caf71db405.ssl.cf1.rackcdn.com/v1-latest/canon.min.css">
   <link rel="stylesheet" href="documentation.css">
 </head>
-<body>
+<body ng-model-options="{ updateOn: 'blur' }">
   <div class="rs-container" style="padding-top: 50px;" ng-controller="DemoController">
     <div class="rs-btn-group">
       <div class="rs-btn" ng-click="$destroy()">Destroy Scope</div>
@@ -94,9 +94,7 @@
     };
 
     $scope.save = function () {
-      return $timeout(function () {
-        // throw 'Everything is broken!';
-      }, 250);
+      return $timeout(angular.noop, 250);
     }
   });
 
