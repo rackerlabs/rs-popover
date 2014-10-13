@@ -29,6 +29,8 @@ angular.module('rs.popover').factory('form', function () {
       } else if (controller.$viewValue === '') {
         controller.$setViewValue(undefined);
       }
+
+      controller.$commitViewValue();
     });
   }
 
