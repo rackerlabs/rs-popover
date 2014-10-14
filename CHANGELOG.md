@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.2.3 (October 14, 2014)
+
+- Fix validation when used in conjunction with blur-triggered binding.
+- Fix loading in browsers that require a vendor prefix on the CSS transform property.
+
 ## v0.2.2 (September 25, 2014)
 
 - Revert to using $dirty to trigger validation.
