@@ -92,7 +92,7 @@ describe('rs.popover.PopoverState', function () {
 
   describe('save', function () {
     beforeEach(function () {
-      spyOn(fsm, 'load');
+      spyOn(fsm, 'fail');
       spyOn(fsm, 'close');
 
       fsm.on('save', callback);
@@ -116,11 +116,30 @@ describe('rs.popover.PopoverState', function () {
       expect(fsm.close).toHaveBeenCalled();
     });
 
-    it('calls load when save callback fails', function () {
+    it('calls fail when save callback fails', function () {
       deferred.reject('fail');
       scope.$digest();
 
-      expect(fsm.load).toHaveBeenCalled();
+      expect(fsm.fail).toHaveBeenCalled();
+    });
+  });
+
+  describe('fail', function () {
+    beforeEach(function () {
+      fsm.on('fail', callback);
+      fsm.fail(new Error('everything is broken'));
+    });
+
+    it('transitions state to error', function () {
+      expect(fsm.is('failed')).toBe(true);
+    });
+
+    it('sets message to provided argument', function () {
+      expect(fsm.message).toBe('Error: everything is broken');
+    });
+
+    it('executes fail callback', function () {
+      expect(callback).toHaveBeenCalled();
     });
   });
 

@@ -3,7 +3,7 @@ angular.module('rs.popover').factory('PopoverState', function ($q) {
 
   function PopoverState() {
     this.state = PopoverState.CLOSED;
-    this.subscriptions = { open: [], load: [], error: [], save: [], close: [] };
+    this.subscriptions = { open: [], load: [], error: [], save: [], fail: [], close: [] };
   }
 
   PopoverState.prototype.is = function (state) {
@@ -37,6 +37,7 @@ angular.module('rs.popover').factory('PopoverState', function ($q) {
     this.fire('load');
   };
 
+  // TODO: This should accept an error instead of a message.
   PopoverState.prototype.error = function (message) {
     this.message = message;
     this.state = PopoverState.ERROR;
@@ -47,7 +48,13 @@ angular.module('rs.popover').factory('PopoverState', function ($q) {
     this.state = PopoverState.SAVING;
     this.fire('save')
       .then(angular.bind(this, this.close))
-      .catch(angular.bind(this, this.load));
+      .catch(angular.bind(this, this.fail));
+  };
+
+  PopoverState.prototype.fail = function (error) {
+    this.message = error.toString();
+    this.state = PopoverState.FAILED;
+    this.fire('fail');
   };
 
   PopoverState.prototype.close = function () {
@@ -60,6 +67,7 @@ angular.module('rs.popover').factory('PopoverState', function ($q) {
   PopoverState.OPEN = 'open';
   PopoverState.ERROR = 'error';
   PopoverState.SAVING = 'saving';
+  PopoverState.FAILED = 'failed';
 
   return PopoverState;
 });

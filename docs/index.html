@@ -94,7 +94,9 @@
     };
 
     $scope.save = function () {
-      return $timeout(angular.noop, 250);
+      return $timeout(function () {
+        throw new Error('failed');
+      }, 250);
     }
   });
 
