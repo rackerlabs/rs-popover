@@ -114,7 +114,8 @@ Accepts the name of a function to be called when the popover's form is
 submitted. This function should return a promise. The save and cancel buttons
 will be disabled until the promise returned by this method is resolved. When the
 promise resolved, the popover will be closed. When the promise throws an error, 
-the buttons will be enabled. This attribute is optional.
+the buttons will be enabled and an error message will be displayed. This 
+attribute is optional.
 
 ### `rs-popover-trigger`
 

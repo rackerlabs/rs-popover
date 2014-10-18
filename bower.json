@@ -6,7 +6,7 @@
   "description": "Angular directive for Canon popovers.",
   "authors": [
     "Brad Gignac <bgignac@bradgignac.com>",
-	"Matt Brown <matt.brown@rackspace.com>"
+    "Matt Brown <matt.brown@rackspace.com>"
   ],
   "keywords": [
     "angular",

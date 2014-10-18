@@ -9,10 +9,11 @@
       <div class="rs-popover-loading" ng-show="is('loading')">
         <div class="rs-popover-message">{{ state.message }}</div>
       </div>
-      <div class="rs-popover-body" ng-show="is('open') || is('saving')" ng-transclude></div>
-      <div class="rs-popover-footer rs-btn-group" ng-show="is('open') || is('saving')">
+      <div class="rs-popover-body" ng-show="is('open') || is('saving') || is('failed')" ng-transclude></div>
+      <div class="rs-popover-footer rs-btn-group" ng-show="is('open') || is('saving') || is('failed')">
         <button class="rs-btn rs-btn-primary" ng-disabled="is('saving')" ng-click="save()">{{ saveLabel || 'Save' }}</button>
-        <button class="rs-btn rs-btn-link" ng-hide="is('saving')" ng-click="close()">{{ cancelLabel || 'Cancel' }}</button>
+        <button class="rs-btn rs-btn-link" ng-hide="is('saving') || is('failed')" ng-click="close()">{{ cancelLabel || 'Cancel' }}</button>
+        <span class="rs-status-error" ng-show="is('failed')">{{ state.message }}</span>
       </div>
     </form>
   </div>
