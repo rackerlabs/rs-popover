@@ -7,7 +7,9 @@ angular.module('rs.popover', []).run(function () {
     .rs-popover-loading, .rs-popover-error { width: 200px; height: 140px } \
     .rs-popover-error { color: #c40022 } \
     .rs-popover-message { width: 100%; position: absolute; top: 50%; left: 50%; -moz-transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); text-align: center; } \
-    .rs-popover-body { margin: 0; padding: 20px }');
+    .rs-popover-body { margin: 0; padding: 20px } \
+    .rs-popover-footer > .rs-status-error { float: left; margin-top: 3px; }'
+    );
   styleTag = document.createElement('style');
   styleTag.type = 'text/css';
   styleTag.appendChild(styleContent);
@@ -96,10 +98,11 @@ module.run(['$templateCache', function($templateCache) {
     '      <div class="rs-popover-loading" ng-show="is(\'loading\')">\n' +
     '        <div class="rs-popover-message">{{ state.message }}</div>\n' +
     '      </div>\n' +
-    '      <div class="rs-popover-body" ng-show="is(\'open\') || is(\'saving\')" ng-transclude></div>\n' +
-    '      <div class="rs-popover-footer rs-btn-group" ng-show="is(\'open\') || is(\'saving\')">\n' +
+    '      <div class="rs-popover-body" ng-show="is(\'open\') || is(\'saving\') || is(\'failed\')" ng-transclude></div>\n' +
+    '      <div class="rs-popover-footer rs-btn-group" ng-show="is(\'open\') || is(\'saving\') || is(\'failed\')">\n' +
     '        <button class="rs-btn rs-btn-primary" ng-disabled="is(\'saving\')" ng-click="save()">{{ saveLabel || \'Save\' }}</button>\n' +
-    '        <button class="rs-btn rs-btn-link" ng-hide="is(\'saving\')" ng-click="close()">{{ cancelLabel || \'Cancel\' }}</button>\n' +
+    '        <button class="rs-btn rs-btn-link" ng-hide="is(\'saving\') || is(\'failed\')" ng-click="close()">{{ cancelLabel || \'Cancel\' }}</button>\n' +
+    '        <span class="rs-status-error" ng-show="is(\'failed\')">{{ state.message }}</span>\n' +
     '      </div>\n' +
     '    </form>\n' +
     '  </div>\n' +
@@ -233,7 +236,7 @@ angular.module('rs.popover').factory('PopoverState', ["$q", function ($q) {
 
   function PopoverState() {
     this.state = PopoverState.CLOSED;
-    this.subscriptions = { open: [], load: [], error: [], save: [], close: [] };
+    this.subscriptions = { open: [], load: [], error: [], save: [], fail: [], close: [] };
   }
 
   PopoverState.prototype.is = function (state) {
@@ -267,6 +270,7 @@ angular.module('rs.popover').factory('PopoverState', ["$q", function ($q) {
     this.fire('load');
   };
 
+  // TODO: This should accept an error instead of a message.
   PopoverState.prototype.error = function (message) {
     this.message = message;
     this.state = PopoverState.ERROR;
@@ -277,7 +281,13 @@ angular.module('rs.popover').factory('PopoverState', ["$q", function ($q) {
     this.state = PopoverState.SAVING;
     this.fire('save')
       .then(angular.bind(this, this.close))
-      .catch(angular.bind(this, this.load));
+      .catch(angular.bind(this, this.fail));
+  };
+
+  PopoverState.prototype.fail = function (error) {
+    this.message = error.toString();
+    this.state = PopoverState.FAILED;
+    this.fire('fail');
   };
 
   PopoverState.prototype.close = function () {
@@ -290,6 +300,7 @@ angular.module('rs.popover').factory('PopoverState', ["$q", function ($q) {
   PopoverState.OPEN = 'open';
   PopoverState.ERROR = 'error';
   PopoverState.SAVING = 'saving';
+  PopoverState.FAILED = 'failed';
 
   return PopoverState;
 }]);

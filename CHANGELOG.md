@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.2.4 (October 18, 2014)
+
+- Show error message when on-save hook is rejected.
+
 ## v0.2.3 (October 14, 2014)
 
 - Fix validation when used in conjunction with blur-triggered binding.
