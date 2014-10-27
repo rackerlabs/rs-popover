@@ -14,6 +14,7 @@
         <button class="rs-btn rs-btn-primary" ng-disabled="is('saving')" ng-click="save()">{{ saveLabel || 'Save' }}</button>
         <button class="rs-btn rs-btn-link" ng-hide="is('saving') || is('failed')" ng-click="close()">{{ cancelLabel || 'Cancel' }}</button>
         <span class="rs-status-error" ng-show="is('failed')">{{ state.message }}</span>
+        <i class="rs-processing-indicator" ng-show="is('saving')"></i>
       </div>
     </form>
   </div>
