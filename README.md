@@ -135,6 +135,13 @@ Type: `String`, Required
 Accepts the ID of the popover it should toggle. If this attribute is used inside
 of a popover, it defaults to toggling the containing popover.
 
+##### `rs-popover-target`
+
+Type: `String`
+
+Accepts the ID of the element at which the popover should point. If this 
+attribute is not provided, the popover will point at the popover trigger.
+
 ### Programmatic Control
 
 In addition to the `rs-popover-trigger` directive for toggling popover 
