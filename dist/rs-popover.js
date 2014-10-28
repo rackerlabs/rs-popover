@@ -8,7 +8,8 @@ angular.module('rs.popover', []).run(function () {
     .rs-popover-error { color: #c40022 } \
     .rs-popover-message { width: 100%; position: absolute; top: 50%; left: 50%; -moz-transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); text-align: center; } \
     .rs-popover-body { margin: 0; padding: 20px } \
-    .rs-popover-footer > .rs-status-error { float: left; margin-top: 3px; }'
+    .rs-popover-footer > .rs-status-error { float: left; margin-top: 3px; } \
+    .rs-popover-footer > .rs-processing-indicator { margin-top: 5px; }'
     );
   styleTag = document.createElement('style');
   styleTag.type = 'text/css';
@@ -103,6 +104,7 @@ module.run(['$templateCache', function($templateCache) {
     '        <button class="rs-btn rs-btn-primary" ng-disabled="is(\'saving\')" ng-click="save()">{{ saveLabel || \'Save\' }}</button>\n' +
     '        <button class="rs-btn rs-btn-link" ng-hide="is(\'saving\') || is(\'failed\')" ng-click="close()">{{ cancelLabel || \'Cancel\' }}</button>\n' +
     '        <span class="rs-status-error" ng-show="is(\'failed\')">{{ state.message }}</span>\n' +
+    '        <i class="rs-processing-indicator" ng-show="is(\'saving\')"></i>\n' +
     '      </div>\n' +
     '    </form>\n' +
     '  </div>\n' +
@@ -385,24 +387,37 @@ angular.module('rs.popover').directive('rsPopoverForm', function () {
 angular.module('rs.popover').directive('rsPopoverTrigger', ["registry", function (registry) {
   'use strict';
 
+  function findPopoverId(attrs, popoverController) {
+    if (attrs.rsPopoverTrigger) {
+      return attrs.rsPopoverTrigger;
+    } else if (popoverController) {
+      return popoverController.id;
+    }
+
+    throw 'No popover ID was specified for popover trigger!';
+  }
+
+  function findPopoverTarget(element, attrs) {
+    if (attrs.rsPopoverTarget) {
+      return angular.element('#' + attrs.rsPopoverTarget);
+    }
+
+    return element;
+  }
+
   return {
     restrict: 'A',
     require: '?^rsPopover',
     link: function (scope, element, attrs, popoverController) {
-      var id;
+      var id, target;
 
-      if (attrs.rsPopoverTrigger) {
-        id = attrs.rsPopoverTrigger;
-      } else if (popoverController) {
-        id = popoverController.id;
-      } else {
-        throw 'No popover ID was specified for popover trigger!';
-      }
+      id = findPopoverId(attrs, popoverController);
+      target = findPopoverTarget(element, attrs);
 
       element.on('click', function (e) {
         e.preventDefault();
 
-        registry.popover(id).toggle(element);
+        registry.popover(id).toggle(target);
         scope.$apply();
       });
     }
