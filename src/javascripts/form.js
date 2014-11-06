@@ -2,7 +2,9 @@ angular.module('rs.popover').factory('form', function () {
   'use strict';
 
   function reset(element, form) {
-    form.$setPristine();
+    if (form) {
+      form.$setPristine();
+    }
   }
 
   function validate(element) {
