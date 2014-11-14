@@ -22,9 +22,27 @@ describe('rs.popover.form', function () {
     it('marks form as pristine', function () {
       controller.$setDirty();
 
-      form.reset(element, controller);
+      form.reset(controller);
 
       expect(controller.$pristine).toBe(true);
+    });
+  });
+
+  describe('focus', function () {
+    var timeout;
+
+    beforeEach(inject(function ($timeout) {
+      timeout = $timeout;
+
+      element = angular.element('<div><input id="input"></div>');
+      element.appendTo(document.body);
+    }));
+
+    it('focuses input inside element', function () {
+      form.focus(element);
+      timeout.flush();
+
+      expect(document.activeElement).toBe(document.getElementById('input'));
     });
   });
 
@@ -32,7 +50,7 @@ describe('rs.popover.form', function () {
     it('marks form as dirty', function () {
       controller.$setPristine();
 
-      form.validate(element, controller);
+      form.validate(controller, element);
 
       expect(controller.$dirty).toBe(true);
     });
@@ -42,7 +60,7 @@ describe('rs.popover.form', function () {
 
       controller.$setPristine();
 
-      form.validate(element, controller);
+      form.validate(controller, element);
 
       inputs = element.find(':input');
       inputs.each(function (i, element) {

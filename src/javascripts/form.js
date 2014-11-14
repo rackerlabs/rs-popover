@@ -1,13 +1,11 @@
-angular.module('rs.popover').factory('form', function () {
+angular.module('rs.popover').factory('form', function ($timeout) {
   'use strict';
 
-  function reset(element, form) {
-    if (form) {
-      form.$setPristine();
-    }
+  function reset(form) {
+    form.$setPristine();
   }
 
-  function validate(element) {
+  function validate(form, element) {
     element = angular.element(element);
     element.find(':input').each(function (i, element) {
       var controller;
@@ -34,10 +32,22 @@ angular.module('rs.popover').factory('form', function () {
 
       controller.$commitViewValue();
     });
+
+    return form.$valid;
+  }
+
+  function focus(element, invokeApply) {
+    return $timeout(function () {
+      var focusableElement;
+
+      focusableElement = element.find(':input').first();
+      focusableElement.focus();
+    }, 0, invokeApply || false);
   }
 
   return {
     reset: reset,
-    validate: validate
+    validate: validate,
+    focus: focus
   };
 });

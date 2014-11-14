@@ -1,3 +1,5 @@
+// TODO: Delete this.
+
 angular.module('rs.popover').factory('focus', function ($timeout) {
   'use strict';
 
