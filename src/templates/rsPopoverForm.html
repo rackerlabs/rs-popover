@@ -2,18 +2,18 @@
   <div class="rs-popover-overlay" ng-click="ctrl.close()"></div>
   <div class="rs-popover">
     <div ng-class="ctrl.arrow()"></div>
-    <ng-form name="form" class="rs-popover-content" ng-submit="ctrl.save()" novalidate>
+    <ng-form name="form" class="rs-popover-content" novalidate>
       <div class="rs-popover-loading" ng-show="ctrl.is('opening')">
         <div class="rs-popover-message">Loading&hellip;</div>
       </div>
       <div class="rs-popover-error" ng-show="ctrl.is('openingFailed')">
-        <div class="rs-popover-message">{{ state.message }}</div>
+        <div class="rs-popover-message">{{ ctrl.error() }}</div>
       </div>
       <div class="rs-popover-body" ng-show="ctrl.is('open') || ctrl.is('saving') || ctrl.is('savingFailed')" ng-transclude></div>
       <div class="rs-popover-footer rs-btn-group" ng-show="ctrl.is('open') || ctrl.is('saving') || ctrl.is('savingFailed')">
-        <button class="rs-btn rs-btn-primary" ng-disabled="ctrl.is('saving')">{{ saveLabel || 'Save' }}</button>
+        <button class="rs-btn rs-btn-primary" ng-disabled="ctrl.is('saving')" ng-click="ctrl.save()">{{ saveLabel || 'Save' }}</button>
         <button class="rs-btn rs-btn-link" ng-hide="ctrl.is('saving') || ctrl.is('savingFailed')" ng-click="ctrl.close()">{{ cancelLabel || 'Cancel' }}</button>
-        <span class="rs-status-error" ng-show="ctrl.is('savingFailed')">{{ state.message }}</span>
+        <span class="rs-status-error" ng-show="ctrl.is('savingFailed')">{{ ctrl.error() }}</span>
         <i class="rs-processing-indicator" ng-show="ctrl.is('saving')"></i>
       </div>
     </form>

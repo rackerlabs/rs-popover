@@ -93,7 +93,7 @@ describe('rs.popover.PopoverBaseController', function () {
 
       controller.open(target, 'corner', data);
 
-      deferred.reject();
+      deferred.reject(new Error('everything is broken'));
       scope.$digest();
 
       expect(controller.is('openingFailed')).toBeTruthy();

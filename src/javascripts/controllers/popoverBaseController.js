@@ -2,14 +2,16 @@ angular.module('rs.popover').controller('PopoverBaseController', function ($scop
   'use strict';
 
   function executeHook(hook, fsm, ctx) {
-    var result;
+    var self, result;
 
+    self = this;
     hook = hook || angular.noop;
     result = hook(ctx.data);
 
     return $q.when(result).then(function () {
       fsm.finish();
-    }, function () {
+    }, function (err) {
+      self.errorMessage = err.toString();
       fsm.fail();
     });
   }
@@ -18,11 +20,11 @@ angular.module('rs.popover').controller('PopoverBaseController', function ($scop
     form.focus(ctx.element);
     tether.attach(ctx.element, ctx.target, ctx.corner);
 
-    return executeHook($scope.onOpen, fsm, ctx);
+    return executeHook.call(this, $scope.onOpen, fsm, ctx);
   }
 
   function onSave(fsm, ctx) {
-    return executeHook($scope.onSave, fsm, ctx);
+    return executeHook.call(this, $scope.onSave, fsm, ctx);
   }
 
   function onClose(fsm, ctx) {
@@ -35,9 +37,9 @@ angular.module('rs.popover').controller('PopoverBaseController', function ($scop
 
   this.id = $scope.id;
   this.fsm = new PopoverStateMachine();
-  this.fsm.on('opening', onOpen);
-  this.fsm.on('saving', onSave);
-  this.fsm.on('closed', onClose);
+  this.fsm.on('opening', angular.bind(this, onOpen));
+  this.fsm.on('saving', angular.bind(this, onSave));
+  this.fsm.on('closed', angular.bind(this, onClose));
 
   registry.register(this.id, this);
 
@@ -82,5 +84,9 @@ angular.module('rs.popover').controller('PopoverBaseController', function ($scop
       'rs-popover-arrow-top-left': corner === 'top-left',
       'rs-popover-arrow-left-top': corner === 'left-top'
     };
+  };
+
+  this.error = function () {
+    return this.errorMessage;
   };
 });

@@ -81,13 +81,13 @@
   angular.module('rsPopoverDemo', ['rs.popover']).controller('DemoController', function ($scope, $timeout, registry) {
     $scope.load = function () {
       return $timeout(function () {
-        $scope.data = {};
+        throw new Error('failed');
       }, 5000);
     };
 
     $scope.save = function () {
       return $timeout(function () {
-        // throw new Error('failed');
+        throw new Error('failed');
       }, 5000);
     }
   });

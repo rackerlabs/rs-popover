@@ -7,7 +7,7 @@
         <div class="rs-popover-message">Loading&hellip;</div>
       </div>
       <div class="rs-popover-error" ng-show="ctrl.is('openingFailed')">
-        <div class="rs-popover-message">{{ state.message }}</div>
+        <div class="rs-popover-message">{{ ctrl.error() }}</div>
       </div>
       <div class="rs-popover-body" ng-show="ctrl.is('open')" ng-transclude></div>
     </div>
