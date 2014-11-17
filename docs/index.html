@@ -79,24 +79,16 @@
   <script type="application/javascript">
 
   angular.module('rsPopoverDemo', ['rs.popover']).controller('DemoController', function ($scope, $timeout, registry) {
-    $scope.show = function (e) {
-      registry.popover('programmatic-demo').open(angular.element(e.target));
-    };
-
-    $scope.hide = function () {
-      registry.popover('programmatic-demo').close();
-    };
-
     $scope.load = function () {
       return $timeout(function () {
         $scope.data = {};
-      }, 30000);
+      }, 5000);
     };
 
     $scope.save = function () {
       return $timeout(function () {
-        throw new Error('failed');
-      }, 1000);
+        // throw new Error('failed');
+      }, 5000);
     }
   });
 

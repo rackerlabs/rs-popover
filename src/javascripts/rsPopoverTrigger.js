@@ -31,7 +31,7 @@ angular.module('rs.popover').directive('rsPopoverTrigger', function (registry) {
       element.on('click', function (e) {
         e.preventDefault();
 
-        registry.popover(id).toggle(target);
+        registry.popover(id).toggle(target, 'top-left');
         scope.$apply();
       });
     }

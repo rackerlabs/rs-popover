@@ -1,7 +1,7 @@
 <div class="rs-popover-wrapper" ng-hide="ctrl.is('closed')">
   <div class="rs-popover-overlay" ng-click="ctrl.close()"></div>
   <div class="rs-popover">
-    <div ng-class="{{ styles }}"></div>
+    <div ng-class="ctrl.arrow()"></div>
     <div class="rs-popover-content">
       <div class="rs-popover-loading" ng-show="ctrl.is('opening')">
         <div class="rs-popover-message">Loading&hellip;</div>

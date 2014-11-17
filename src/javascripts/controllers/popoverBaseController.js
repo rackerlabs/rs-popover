@@ -70,4 +70,17 @@ angular.module('rs.popover').controller('PopoverBaseController', function ($scop
     handler = this.is('closed') ? this.open : this.close;
     handler.apply(this, arguments);
   };
+
+  this.arrow = function () {
+    var context, corner;
+
+    context = this.fsm.context;
+    corner = context.corner;
+
+    return {
+      'rs-popover-arrow': true,
+      'rs-popover-arrow-top-left': corner === 'top-left',
+      'rs-popover-arrow-left-top': corner === 'left-top'
+    };
+  };
 });
