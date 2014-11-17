@@ -107,7 +107,8 @@ attribute.
 ```
 <button rs-popover-trigger="myPopover" 
         rs-popover-target="myTarget" 
-        rs-popover-attach="top-left">Toggle Me!</button>
+        rs-popover-attach="top-left"
+        rs-popover-data="{ id: 'object-id' }">Toggle Me!</button>
 ```
 
 #### Attributes
@@ -134,6 +135,13 @@ Specifies how the popover will be oriented in relation to the target.
 
 - `attach="left-top"` - Position the target to the left of the popover.
 - `attach="top-left"` - Position the target to the top left of the popover.
+
+##### `rs-popover-data`
+
+Type: `Object`, Default: `{}`
+
+Accepts an object that will be passed to the `on-open` and `on-save` hooks
+exposed by the popover.
 
 ### Programmatic Control
 
