@@ -1,4 +1,4 @@
-angular.module('rs.popover').directive('rsPopoverTrigger', function (registry) {
+angular.module('rs.popover').directive('rsPopoverTrigger', function (registry, Attachment) {
   'use strict';
 
   function findPopoverId(attrs, popoverController) {
@@ -19,19 +19,28 @@ angular.module('rs.popover').directive('rsPopoverTrigger', function (registry) {
     return element;
   }
 
+  function findPopoverCorner(attrs) {
+    if (attrs.rsPopoverAttach) {
+      return attrs.rsPopoverAttach;
+    }
+
+    return Attachment.TOP_LEFT;
+  }
+
   return {
     restrict: 'A',
     require: '?^rsPopover',
     link: function (scope, element, attrs, popoverController) {
-      var id, target;
+      var id, target, corner;
 
       id = findPopoverId(attrs, popoverController);
       target = findPopoverTarget(element, attrs);
+      corner = findPopoverCorner(attrs);
 
       element.on('click', function (e) {
         e.preventDefault();
 
-        registry.popover(id).toggle(target, 'top-left');
+        registry.popover(id).toggle(target, corner);
         scope.$apply();
       });
     }

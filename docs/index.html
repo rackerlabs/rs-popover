@@ -19,11 +19,11 @@
 
     <hr>
 
-    <h1>Declarative Control</h1>
-    <p>
-      <button class="rs-btn" rs-popover-trigger="declarative-demo">Show</button>
-    </p>
-    <rs-popover id="declarative-demo" attach="left-top" on-open="load">
+    <h1>rs-popover</h1>
+    <div class="rs-btn-group">
+      <button rs-popover-trigger="declarative-demo" rs-popover-attach="left-top" class="rs-btn">Show</button>
+    </div>
+    <rs-popover id="declarative-demo" on-open="load">
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
       <p>
         <button class="rs-btn rs-btn-link" rs-popover-trigger>Hide</button>
@@ -32,7 +32,7 @@
 
     <hr>
 
-    <h1>Form</h1>
+    <h1>rs-popover-form</h1>
     <div class="rs-btn-group">
       <button class="rs-btn" rs-popover-trigger="form">Form</button>
     </div>
@@ -82,13 +82,13 @@
     $scope.load = function () {
       return $timeout(function () {
         // throw $q.reject();
-      }, 5000);
+      }, 1000);
     };
 
     $scope.save = function () {
       return $timeout(function () {
-        return $q.reject('oops');
-      }, 5000);
+        // return $q.reject('oops');
+      }, 1000);
     }
   });
 

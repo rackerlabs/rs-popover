@@ -8,7 +8,7 @@ Angular directive for [Canon](http://rackerlabs.github.io/canon) popovers.
 
 ## Requirements
 
-- AngularJS v1.2 or higher
+- AngularJS v1.3 or higher
 - Canon v1.1 or higher
 - jQuery v1.9 or higher
 
@@ -46,15 +46,6 @@ Type: `String`, Required
 Accepts any unique string used to identity this popover. This attribute is 
 required and must be unique across all other elements on the page.
 
-##### `attach`
-
-Type: `String`, Default: `top-left`
-
-Specifies how popovers will be oriented in relation to their target.
-
-- `attach="left-top"` - Position the target to the left of the popover.
-- `attach="top-left"` - Position the target to the top left of the popover.
-
 ##### `on-open`
 
 Type: `Expression`, Default: `''`
@@ -89,15 +80,6 @@ Type: `String`, Required
 Accepts any unique string used to identity this popover. This attribute is 
 required and must be unique across all other elements on the page.
 
-##### `attach`
-
-Type: `String`, Default: `top-left`
-
-Specifies how popovers will be oriented in relation to their target.
-
-- `attach="left-top"` - Position the target to the left of the popover.
-- `attach="top-left"` - Position the target to the top left of the popover.
-
 ##### `on-open`
 
 Type: `Expression`, Default: `''`
@@ -123,7 +105,9 @@ This directive toggles a popover's visibility and can only be used as an
 attribute.
 
 ```
-<button rs-popover-trigger="myPopover">Toggle Me!</button>
+<button rs-popover-trigger="myPopover" 
+        rs-popover-target="myTarget" 
+        rs-popover-attach="top-left">Toggle Me!</button>
 ```
 
 #### Attributes
@@ -142,6 +126,15 @@ Type: `String`
 Accepts the ID of the element at which the popover should point. If this 
 attribute is not provided, the popover will point at the popover trigger.
 
+##### `rs-popover-attach`
+
+Type: `String`, Default: `top-left`
+
+Specifies how the popover will be oriented in relation to the target.
+
+- `attach="left-top"` - Position the target to the left of the popover.
+- `attach="top-left"` - Position the target to the top left of the popover.
+
 ### Programmatic Control
 
 In addition to the `rs-popover-trigger` directive for toggling popover 
@@ -151,11 +144,11 @@ popovers programmatically.
 ```
 angular.module('my.module').controller('MyController', function (registry) {
   $scope.toggle = function (e) {
-    registry.popover('somepopoverid').toggle(e.target);
+    registry.popover('somepopoverid').toggle(e.target, 'top-left');
   };
 
   $scope.show = function (e) {
-    registry.popover('somepopoverid').open(e.target);
+    registry.popover('somepopoverid').open(e.target, 'top-left');
   };
 
   $scope.hide = function () {

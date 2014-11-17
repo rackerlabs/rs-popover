@@ -13,7 +13,7 @@ describe('rs.popover.rsPopoverTrigger', function () {
     spyOn(registry, 'popover').andReturn(popover);
   }));
 
-  describe('link', function () {
+  describe('rs-popover-trigger', function () {
     it('toggles popover specified by attribute', inject(function ($compile) {
       var element;
 
@@ -35,7 +35,9 @@ describe('rs.popover.rsPopoverTrigger', function () {
 
       expect(registry.popover).toHaveBeenCalledWith('popover');
     }));
+  });
 
+  describe('rs-popover-target', function () {
     it('points popover at specified element', inject(function ($compile) {
       var element, target;
 
@@ -61,6 +63,32 @@ describe('rs.popover.rsPopoverTrigger', function () {
 
       target = popover.toggle.argsForCall[0][0].get();
       expect(target).toEqual(element.get());
+    }));
+  });
+
+  describe('rs-popover-attach', function () {
+    it('attaches popover at specified attachment point', inject(function ($compile) {
+      var element, corner;
+
+      element = $compile('<a rs-popover-trigger="mypopover" rs-popover-attach="left-top"></a>')(scope);
+      scope.$digest();
+
+      element.triggerHandler('click');
+
+      corner = popover.toggle.argsForCall[0][1];
+      expect(corner).toEqual('left-top');
+    }));
+
+    it('attaches popover at default attachment point', inject(function ($compile) {
+      var element, corner;
+
+      element = $compile('<a rs-popover-trigger="mypopover"></a>')(scope);
+      scope.$digest();
+
+      element.triggerHandler('click');
+
+      corner = popover.toggle.argsForCall[0][1];
+      expect(corner).toEqual('top-left');
     }));
   });
 });
