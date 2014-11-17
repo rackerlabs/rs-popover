@@ -78,16 +78,16 @@
 
   <script type="application/javascript">
 
-  angular.module('rsPopoverDemo', ['rs.popover']).controller('DemoController', function ($scope, $timeout, registry) {
+  angular.module('rsPopoverDemo', ['rs.popover']).controller('DemoController', function ($scope, $timeout, $q, registry) {
     $scope.load = function () {
       return $timeout(function () {
-        throw new Error('failed');
+        throw $.reject();
       }, 5000);
     };
 
     $scope.save = function () {
       return $timeout(function () {
-        throw new Error('failed');
+        return $.reject();
       }, 5000);
     }
   });

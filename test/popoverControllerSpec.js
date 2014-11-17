@@ -1,143 +1,179 @@
 describe('rs.popover.PopoverController', function () {
   'use strict';
 
-  var scope, element, form, tether, target;
+  var scope, element, target, data, controller;
 
   beforeEach(module('rs.popover'));
 
-  beforeEach(inject(function ($rootScope, $controller, _form_, _tether_) {
+  beforeEach(inject(function ($rootScope, $controller, form, tether) {
+    spyOn(form, 'reset');
+    spyOn(tether, 'attach');
+    spyOn(tether, 'detach');
+
+    data = {};
+    element = angular.element();
+    target = angular.element();
     scope = $rootScope.$new();
     scope.id = 'mypopover';
-    scope.attach = 'left-top';
-    scope.form = {};
-    scope.onOpen = jasmine.createSpy('onOpen');
-    scope.onSave = jasmine.createSpy('onSave');
 
-    element = angular.element('<div></div>');
-    target = angular.element('<div></div>');
-
-    form = _form_;
-    spyOn(form, 'reset');
-    spyOn(form, 'validate');
-
-    tether = _tether_;
-    spyOn(tether, 'attach');
-
-    $controller('PopoverController', {
+    controller = $controller('PopoverController', {
       $scope: scope,
       $element: element
     });
   }));
 
-  describe('registration', function () {
-    it('registers popover', inject(function (registry) {
-      expect(registry.popover('mypopover')).toBe(scope);
+  describe('register', function () {
+    it('registers popover on creation', inject(function (registry) {
+      expect(registry.popover('mypopover')).toBe(controller);
     }));
 
-    it('deregisters popover', inject(function (registry) {
+    it('deregisters popover on destroy', inject(function (registry) {
       scope.$destroy();
 
       expect(function () {
         registry.popover('mypopover');
-      }).toThrow();
+      }).toThrow('Popover ID "mypopover" has not been registered!');
     }));
   });
 
-  describe('open', function () {
-    it('transitions popover to loading state', function () {
-      scope.open(target);
-
-      expect(scope.is('loading')).toBe(true);
-    });
-
-    it('tethers element to target', function () {
-      scope.open(target);
-
-      expect(tether.attach).toHaveBeenCalledWith(element, target, 'left-top');
-    });
-
-    it('calls onOpen hook', function () {
-      scope.open(target);
-
-      expect(scope.onOpen).toHaveBeenCalled();
-    });
-  });
-
-  describe('close', function () {
-    it('transitions popover to closed state', function () {
-      scope.open(target);
-      scope.close();
-
-      expect(scope.is('closed')).toBe(true);
-    });
-
-    it('resets form', function () {
-      scope.open(target);
-      scope.close();
-
-      expect(form.reset).toHaveBeenCalledWith(element, scope.form);
-    });
-  });
-
   describe('toggle', function () {
-    it('opens popover when it is closed', function () {
-      scope.close();
+    it('calls open with arguments when closed', function () {
+      controller.close();
+      spyOn(controller, 'open');
 
-      scope.toggle(target);
+      controller.toggle('one', 'two', 'three');
 
-      expect(scope.is('loading')).toBe(true);
+      expect(controller.open).toHaveBeenCalledWith('one', 'two', 'three');
     });
 
-    it('closes popover when it is not closed', function () {
-      scope.open();
+    it('calls close with arguments when not closed', function () {
+      controller.open();
+      spyOn(controller, 'close');
 
-      scope.toggle(target);
+      controller.toggle('one', 'two', 'three');
 
-      expect(scope.is('closed')).toBe(true);
+      expect(controller.close).toHaveBeenCalledWith('one', 'two', 'three');
     });
+  });
+
+  describe('open', function () {
+    it('attaches element to target', inject(function (tether) {
+      controller.open(target, 'corner', data);
+
+      expect(tether.attach).toHaveBeenCalledWith(element, target, 'corner');
+    }));
+
+    it('focuses first input', inject(function (form) {
+      spyOn(form, 'focus');
+
+      controller.open(target, 'corner', data);
+
+      expect(form.focus).toHaveBeenCalledWith(element);
+    }));
+
+    it('transitions to loaded when callback succeeds', inject(function ($q) {
+      var deferred;
+
+      deferred = $q.defer();
+      scope.onOpen = jasmine.createSpy('onOpen').andReturn(deferred.promise);
+
+      controller.open(target, 'corner', data);
+
+      deferred.resolve();
+      scope.$digest();
+
+      expect(controller.is('open')).toBeTruthy();
+    }));
+
+    it('transitions to loadingFailed when callback fails', inject(function ($q) {
+      var deferred;
+
+      deferred = $q.defer();
+      scope.onOpen = jasmine.createSpy('onOpen').andReturn(deferred.promise);
+
+      controller.open(target, 'corner', data);
+
+      deferred.reject(new Error('everything is broken'));
+      scope.$digest();
+
+      expect(controller.is('openingFailed')).toBeTruthy();
+    }));
   });
 
   describe('save', function () {
-    it('forces validation', function () {
-      scope.save();
+    beforeEach(inject(function (form) {
+      spyOn(form, 'validate').andReturn(true);
 
-      expect(form.validate).toHaveBeenCalledWith(element, scope.form);
+      controller.open(target, 'corner', data);
+      scope.form = {};
+      scope.$digest();
+    }));
+
+    it('transitions to saving when validation passes', inject(function (form) {
+      form.validate.andReturn(true);
+      controller.save();
+
+      expect(controller.is('saving')).toBeTruthy();
+    }));
+
+    it('does not transit to saving when validation fails', inject(function (form) {
+      form.validate.andReturn(false);
+      controller.save();
+
+      expect(controller.is('open')).toBeTruthy();
+    }));
+
+    it('transitions to closed when callback succeeds', inject(function ($q) {
+      var deferred;
+
+      deferred = $q.defer();
+      scope.onSave = jasmine.createSpy('onSave').andReturn(deferred.promise);
+
+      controller.save();
+
+      deferred.resolve();
+      scope.$digest();
+
+      expect(controller.is('closed')).toBeTruthy();
+    }));
+
+    it('transitions to savingFailed when callback fails', inject(function ($q) {
+      var deferred;
+
+      deferred = $q.defer();
+      scope.onSave = jasmine.createSpy('onSave').andReturn(deferred.promise);
+
+      controller.save();
+
+      deferred.reject(new Error('everything is broken'));
+      scope.$digest();
+
+      expect(controller.is('savingFailed')).toBeTruthy();
+    }));
+  });
+
+  describe('close', function () {
+    beforeEach(function () {
+      controller.open();
+      scope.form = {};
     });
 
-    describe('when form is valid', function () {
-      beforeEach(function () {
-        scope.form.$valid = true;
-      });
+    it('resets form validation', inject(function (form) {
+      controller.close();
 
-      it('transitions popover to saving state when ', function () {
-        scope.save();
+      expect(form.reset).toHaveBeenCalledWith(scope.form);
+    }));
 
-        expect(scope.is('saving')).toBe(true);
-      });
+    it('detaches element from target', inject(function (tether) {
+      controller.close();
 
-      it('calls onSave hook', function () {
-        scope.save(target);
+      expect(tether.detach).toHaveBeenCalledWith(element);
+    }));
 
-        expect(scope.onSave).toHaveBeenCalled();
-      });
-    });
+    it('transitions to closed', function () {
+      controller.close();
 
-    describe('when form is invalid', function () {
-      beforeEach(function () {
-        scope.form.$valid = false;
-      });
-
-      it('transitions popover to saving state when ', function () {
-        scope.save();
-
-        expect(scope.is('saving')).toBe(false);
-      });
-
-      it('calls onSave hook', function () {
-        scope.save(target);
-
-        expect(scope.onSave).not.toHaveBeenCalled();
-      });
+      expect(controller.is('closed')).toBeTruthy();
     });
   });
 });

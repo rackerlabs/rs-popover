@@ -10,7 +10,7 @@ angular.module('rs.popover').directive('rsPopoverForm', function () {
       onSave: '='
     },
     restrict: 'EA',
-    controller: 'PopoverBaseController',
+    controller: 'PopoverController',
     controllerAs: 'ctrl',
     transclude: true,
     templateUrl: 'rsPopoverForm.html'

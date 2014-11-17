@@ -7,7 +7,7 @@ angular.module('rs.popover').directive('rsPopover', function () {
       onOpen: '='
     },
     restrict: 'EA',
-    controller: 'PopoverBaseController',
+    controller: 'PopoverController',
     controllerAs: 'ctrl',
     transclude: true,
     templateUrl: 'rsPopover.html'

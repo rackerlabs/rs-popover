@@ -1,64 +1,92 @@
-angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, form, tether, focus, PopoverState) {
+angular.module('rs.popover').controller('PopoverController', function ($scope, $element, $q, PopoverStateMachine, form, registry, tether) {
   'use strict';
 
-  function resetState() {
-    var state;
+  function executeHook(hook, fsm, ctx) {
+    var self, result;
 
-    state = new PopoverState();
-    state.on('open', $scope.onOpen || angular.noop);
-    state.on('save', $scope.onSave || angular.noop);
-    state.on('close', resetState);
-    state.on('close', function () {
-      form.reset($element, $scope.form);
-    });
-    state.on('load', function () {
-      focus($element);
-    });
+    self = this;
+    hook = hook || angular.noop;
+    result = hook(ctx.data);
 
-    $scope.state = state;
+    return $q.when(result).then(function () {
+      fsm.finish();
+    }, function (err) {
+      self.errorMessage = err.toString();
+      fsm.fail();
+    });
+  }
+
+  function onOpen(fsm, ctx) {
+    form.focus(ctx.element);
+    tether.attach(ctx.element, ctx.target, ctx.corner);
+
+    return executeHook.call(this, $scope.onOpen, fsm, ctx);
+  }
+
+  function onSave(fsm, ctx) {
+    return executeHook.call(this, $scope.onSave, fsm, ctx);
+  }
+
+  function onClose(fsm, ctx) {
+    if ($scope.form) {
+      form.reset($scope.form);
+    }
+
+    tether.detach(ctx.element);
   }
 
   this.id = $scope.id;
-  registry.register($scope.id, $scope);
-  resetState();
+  this.fsm = new PopoverStateMachine();
+  this.fsm.on('opening', angular.bind(this, onOpen));
+  this.fsm.on('saving', angular.bind(this, onSave));
+  this.fsm.on('closed', angular.bind(this, onClose));
 
-  $scope.styles = {
-    'rs-popover-arrow': true,
-    'rs-popover-arrow-top-left': $scope.attach === 'top-left',
-    'rs-popover-arrow-left-top': $scope.attach === 'left-top'
-  };
+  registry.register(this.id, this);
 
   $scope.$on('$destroy', function () {
     registry.deregister($scope.id);
   });
 
-  $scope.is = function (state) {
-    return $scope.state.is(state);
+  this.is = function (state) {
+    return this.fsm.is(state);
   };
 
-  $scope.open = function (target) {
-    $scope.state.open();
-    tether.attach($element, target, $scope.attach);
+  this.open = function (target, corner, data) {
+    this.fsm.setContext({ element: $element, target: target, corner: corner, data: data });
+    this.fsm.open();
   };
 
-  $scope.close = function () {
-    $scope.state.close();
-  };
-
-  $scope.toggle = function (target) {
-    if ($scope.state.is('closed')) {
-      $scope.open(target);
-    } else {
-      $scope.close();
+  this.save = function () {
+    if (form.validate($scope.form, $element)) {
+      this.fsm.save();
     }
   };
 
-  $scope.save = function () {
-    form.validate($element, $scope.form);
+  this.close = function () {
+    this.fsm.close();
+  };
 
-    if ($scope.form.$valid) {
-      $scope.state.save();
-    }
+  this.toggle = function () {
+    var handler;
+
+    handler = this.is('closed') ? this.open : this.close;
+    handler.apply(this, arguments);
+  };
+
+  this.arrow = function () {
+    var context, corner;
+
+    context = this.fsm.context;
+    corner = context.corner;
+
+    return {
+      'rs-popover-arrow': true,
+      'rs-popover-arrow-top-left': corner === 'top-left',
+      'rs-popover-arrow-left-top': corner === 'left-top'
+    };
+  };
+
+  this.error = function () {
+    return this.errorMessage;
   };
 });
-
