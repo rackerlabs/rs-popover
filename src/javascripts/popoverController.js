@@ -1,10 +1,9 @@
 angular.module('rs.popover').controller('PopoverController', function ($scope, $element, $q, PopoverStateMachine, form, registry, tether) {
   'use strict';
 
-  function executeHook(hook, fsm, ctx) {
-    var self, result;
+  function executeHook(self, hook, fsm, ctx) {
+    var result;
 
-    self = this;
     hook = hook || angular.noop;
     result = hook(ctx.data);
 
@@ -15,37 +14,6 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
       fsm.fail();
     });
   }
-
-  function onOpen(fsm, ctx) {
-    form.focus(ctx.element);
-    tether.attach(ctx.element, ctx.target, ctx.corner);
-
-    return executeHook.call(this, $scope.onOpen, fsm, ctx);
-  }
-
-  function onSave(fsm, ctx) {
-    return executeHook.call(this, $scope.onSave, fsm, ctx);
-  }
-
-  function onClose(fsm, ctx) {
-    if ($scope.form) {
-      form.reset($scope.form);
-    }
-
-    tether.detach(ctx.element);
-  }
-
-  this.id = $scope.id;
-  this.fsm = new PopoverStateMachine();
-  this.fsm.on('opening', angular.bind(this, onOpen));
-  this.fsm.on('saving', angular.bind(this, onSave));
-  this.fsm.on('closed', angular.bind(this, onClose));
-
-  registry.register(this.id, this);
-
-  $scope.$on('$destroy', function () {
-    registry.deregister($scope.id);
-  });
 
   this.is = function (state) {
     return this.fsm.is(state);
@@ -89,4 +57,35 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
   this.error = function () {
     return this.errorMessage;
   };
+
+  this.onOpen = function (fsm, ctx) {
+    form.focus(ctx.element);
+    tether.attach(ctx.element, ctx.target, ctx.corner);
+
+    return executeHook(this, $scope.onOpen, fsm, ctx);
+  };
+
+  this.onSave = function (fsm, ctx) {
+    return executeHook(this, $scope.onSave, fsm, ctx);
+  };
+
+  this.onClose = function (fsm, ctx) {
+    if ($scope.form) {
+      form.reset($scope.form);
+    }
+
+    tether.detach(ctx.element);
+  };
+
+  this.id = $scope.id;
+  this.fsm = new PopoverStateMachine();
+  this.fsm.on('opening', angular.bind(this, this.onOpen));
+  this.fsm.on('saving', angular.bind(this, this.onSave));
+  this.fsm.on('closed', angular.bind(this, this.onClose));
+
+  registry.register(this.id, this);
+
+  $scope.$on('$destroy', function () {
+    registry.deregister($scope.id);
+  });
 });
