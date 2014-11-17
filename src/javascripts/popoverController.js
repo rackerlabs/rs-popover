@@ -1,64 +1,91 @@
-angular.module('rs.popover').controller('PopoverController', function ($scope, $element, registry, form, tether, focus, PopoverState) {
+angular.module('rs.popover').controller('PopoverController', function ($scope, $element, $q, PopoverStateMachine, form, registry, tether) {
   'use strict';
 
-  function resetState() {
-    var state;
+  function executeHook(self, hook, fsm, ctx) {
+    var result;
 
-    state = new PopoverState();
-    state.on('open', $scope.onOpen || angular.noop);
-    state.on('save', $scope.onSave || angular.noop);
-    state.on('close', resetState);
-    state.on('close', function () {
-      form.reset($element, $scope.form);
-    });
-    state.on('load', function () {
-      focus($element);
-    });
+    hook = hook || angular.noop;
+    result = hook(ctx.data);
 
-    $scope.state = state;
+    return $q.when(result).then(function () {
+      fsm.finish();
+    }, function (err) {
+      self.errorMessage = err.toString();
+      fsm.fail();
+    });
   }
 
-  this.id = $scope.id;
-  registry.register($scope.id, $scope);
-  resetState();
-
-  $scope.styles = {
-    'rs-popover-arrow': true,
-    'rs-popover-arrow-top-left': $scope.attach === 'top-left',
-    'rs-popover-arrow-left-top': $scope.attach === 'left-top'
+  this.is = function (state) {
+    return this.fsm.is(state);
   };
+
+  this.open = function (target, corner, data) {
+    this.fsm.setContext({ element: $element, target: target, corner: corner, data: data });
+    this.fsm.open();
+  };
+
+  this.save = function () {
+    if (form.validate($scope.form, $element)) {
+      this.fsm.save();
+    }
+  };
+
+  this.close = function () {
+    this.fsm.close();
+  };
+
+  this.toggle = function () {
+    var handler;
+
+    handler = this.is('closed') ? this.open : this.close;
+    handler.apply(this, arguments);
+  };
+
+  this.arrow = function () {
+    var context, corner;
+
+    context = this.fsm.context;
+    corner = context.corner;
+
+    return {
+      'rs-popover-arrow': true,
+      'rs-popover-arrow-top-left': corner === 'top-left',
+      'rs-popover-arrow-left-top': corner === 'left-top'
+    };
+  };
+
+  this.error = function () {
+    return this.errorMessage;
+  };
+
+  this.onOpen = function (fsm, ctx) {
+    form.focus(ctx.element);
+    tether.attach(ctx.element, ctx.target, ctx.corner);
+
+    return executeHook(this, $scope.onOpen, fsm, ctx);
+  };
+
+  this.onSave = function (fsm, ctx) {
+    return executeHook(this, $scope.onSave, fsm, ctx);
+  };
+
+  this.onClose = function (fsm, ctx) {
+    if ($scope.form) {
+      form.reset($scope.form);
+    }
+
+    tether.detach(ctx.element);
+  };
+
+  this.id = $scope.id;
+  this.fsm = new PopoverStateMachine();
+  this.fsm.on('opening', angular.bind(this, this.onOpen));
+  this.fsm.on('saving', angular.bind(this, this.onSave));
+  this.fsm.on('closed', angular.bind(this, this.onClose));
+
+  registry.register(this.id, this);
 
   $scope.$on('$destroy', function () {
     registry.deregister($scope.id);
   });
-
-  $scope.is = function (state) {
-    return $scope.state.is(state);
-  };
-
-  $scope.open = function (target) {
-    $scope.state.open();
-    tether.attach($element, target, $scope.attach);
-  };
-
-  $scope.close = function () {
-    $scope.state.close();
-  };
-
-  $scope.toggle = function (target) {
-    if ($scope.state.is('closed')) {
-      $scope.open(target);
-    } else {
-      $scope.close();
-    }
-  };
-
-  $scope.save = function () {
-    form.validate($element, $scope.form);
-
-    if ($scope.form.$valid) {
-      $scope.state.save();
-    }
-  };
 });
-

@@ -1,15 +1,15 @@
-<div class="rs-popover-wrapper" ng-hide="is('closed')">
-  <div class="rs-popover-overlay" ng-click="close()"></div>
+<div class="rs-popover-wrapper" ng-hide="ctrl.is('closed')">
+  <div class="rs-popover-overlay" ng-click="ctrl.close()"></div>
   <div class="rs-popover">
-    <div ng-class="{{ styles }}"></div>
+    <div ng-class="ctrl.arrow()"></div>
     <div class="rs-popover-content">
-      <div class="rs-popover-error" ng-show="is('error')">
-        <div class="rs-popover-message">{{ state.message }}</div>
+      <div class="rs-popover-loading" ng-show="ctrl.is('opening')">
+        <div class="rs-popover-message">Loading&hellip;</div>
       </div>
-      <div class="rs-popover-loading" ng-show="is('loading')">
-        <div class="rs-popover-message">{{ state.message }}</div>
+      <div class="rs-popover-error" ng-show="ctrl.is('openingFailed')">
+        <div class="rs-popover-message">{{ ctrl.error() }}</div>
       </div>
-      <div class="rs-popover-body" ng-show="is('open')" ng-transclude></div>
+      <div class="rs-popover-body" ng-show="ctrl.is('open')" ng-transclude></div>
     </div>
   </div>
 </div>
