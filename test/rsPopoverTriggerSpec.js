@@ -91,4 +91,35 @@ describe('rs.popover.rsPopoverTrigger', function () {
       expect(corner).toEqual('top-left');
     }));
   });
+
+  describe('rs-popover-data', function () {
+    it('passes specified data to popover', inject(function ($compile) {
+      var element, data;
+
+      scope.model = { id: 'my-id', name: 'my-name' };
+      element = $compile('<a rs-popover-trigger="mypopover" rs-popover-data="{ model: model, other: \'data\' }"></a>')(scope);
+      scope.$digest();
+
+      element.triggerHandler('click');
+
+      data = popover.toggle.argsForCall[0][2];
+      expect(data).toEqual({
+        model: scope.model,
+        other: 'data'
+      });
+    }));
+
+    it('passes default data to popover', inject(function ($compile) {
+      var element, data;
+
+      scope.model = { id: 'my-id', name: 'my-name' };
+      element = $compile('<a rs-popover-trigger="mypopover"></a>')(scope);
+      scope.$digest();
+
+      element.triggerHandler('click');
+
+      data = popover.toggle.argsForCall[0][2];
+      expect(data).toEqual({});
+    }));
+  });
 });

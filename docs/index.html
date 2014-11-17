@@ -21,9 +21,12 @@
 
     <h1>rs-popover</h1>
     <div class="rs-btn-group">
-      <button rs-popover-trigger="declarative-demo" rs-popover-attach="left-top" class="rs-btn">Show</button>
+      <button rs-popover-trigger="rs-popover"
+              rs-popover-attach="top-left"
+              rs-popover-data="{ some: 'data' }"
+              class="rs-btn">Show</button>
     </div>
-    <rs-popover id="declarative-demo" on-open="load">
+    <rs-popover id="rs-popover" on-open="load">
       <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
       <p>
         <button class="rs-btn rs-btn-link" rs-popover-trigger>Hide</button>
@@ -34,9 +37,12 @@
 
     <h1>rs-popover-form</h1>
     <div class="rs-btn-group">
-      <button class="rs-btn" rs-popover-trigger="form">Form</button>
+      <button rs-popover-trigger="rs-popover-form"
+              rs-popover-attach="left-top"
+              rs-popover-data="{ other: 'data' }"
+              class="rs-btn">Form</button>
     </div>
-    <rs-popover-form id="form" class="rs-form" on-open="load" on-save="save">
+    <rs-popover-form id="rs-popover-form" class="rs-form" on-open="load" on-save="save">
       <ng-form name="form">
         <div class="rs-control-group" ng-class="{ error: form.name.$dirty && !form.name.$valid }">
           <label for="form.name" class="rs-control-label">Name</label>
@@ -54,22 +60,6 @@
         </div>
       </ng-form>
     </rs-popover-form>
-
-    <hr>
-
-    <h1>Nested Popovers</h1>
-    <div class="rs-btn-group">
-      <button class="rs-btn" rs-popover-trigger="nested-tier-one">Nested</button>
-    </div>
-    <rs-popover id="nested-tier-one">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
-      <p>
-        <button class="rs-btn rs-btn-link" rs-popover-trigger="nested-tier-two">Popovers</button>
-      </p>
-    </rs-popover>
-    <rs-popover id="nested-tier-two">
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea, tempore, odio, dolorum, omnis architecto pariatur dolor blanditiis similique laudantium in nemo veniam porro? Impedit, enim minus molestias tenetur ab possimus!</p>
-    </rs-popover>
   </div>
 
   <script type="application/javascript" src="jquery/dist/jquery.js"></script>
@@ -79,13 +69,15 @@
   <script type="application/javascript">
 
   angular.module('rsPopoverDemo', ['rs.popover']).controller('DemoController', function ($scope, $timeout, $q, registry) {
-    $scope.load = function () {
+    $scope.load = function (data) {
+      console.log(data);
       return $timeout(function () {
         // throw $q.reject();
       }, 1000);
     };
 
-    $scope.save = function () {
+    $scope.save = function (data) {
+      console.log(data);
       return $timeout(function () {
         // return $q.reject('oops');
       }, 1000);

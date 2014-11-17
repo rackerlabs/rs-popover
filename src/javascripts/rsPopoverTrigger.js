@@ -27,20 +27,29 @@ angular.module('rs.popover').directive('rsPopoverTrigger', function (registry, A
     return Attachment.TOP_LEFT;
   }
 
+  function evalPopoverData(scope, attrs) {
+    if (attrs.rsPopoverData) {
+      return scope.$eval(attrs.rsPopoverData);
+    }
+
+    return {};
+  }
+
   return {
     restrict: 'A',
     require: '?^rsPopover',
     link: function (scope, element, attrs, popoverController) {
-      var id, target, corner;
+      var id, target, corner, data;
 
       id = findPopoverId(attrs, popoverController);
       target = findPopoverTarget(element, attrs);
       corner = findPopoverCorner(attrs);
+      data = evalPopoverData(scope, attrs);
 
       element.on('click', function (e) {
         e.preventDefault();
 
-        registry.popover(id).toggle(target, corner);
+        registry.popover(id).toggle(target, corner, data);
         scope.$apply();
       });
     }
