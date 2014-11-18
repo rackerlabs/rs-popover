@@ -63,10 +63,17 @@ describe('rs.popover.PopoverController', function () {
       expect(tether.attach).toHaveBeenCalledWith(element, target, 'corner');
     }));
 
-    it('focuses first input', inject(function (form) {
+    it('focuses first input when callback succeeds', inject(function ($q, form) {
+      var deferred;
+
       spyOn(form, 'focus');
+      deferred = $q.defer();
+      scope.onOpen = jasmine.createSpy('onOpen').andReturn(deferred.promise);
 
       controller.open(target, 'corner', data);
+
+      deferred.resolve();
+      scope.$digest();
 
       expect(form.focus).toHaveBeenCalledWith(element);
     }));

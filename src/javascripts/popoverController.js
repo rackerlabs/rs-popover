@@ -59,10 +59,13 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
   };
 
   this.onOpen = function (fsm, ctx) {
-    form.focus(ctx.element);
     tether.attach(ctx.element, ctx.target, ctx.corner);
 
     return executeHook(this, $scope.onOpen, fsm, ctx);
+  };
+
+  this.onLoad = function (fsm, ctx) {
+    form.focus(ctx.element);
   };
 
   this.onSave = function (fsm, ctx) {
@@ -80,6 +83,7 @@ angular.module('rs.popover').controller('PopoverController', function ($scope, $
   this.id = $scope.id;
   this.fsm = new PopoverStateMachine();
   this.fsm.on('opening', angular.bind(this, this.onOpen));
+  this.fsm.on('open', angular.bind(this, this.onLoad));
   this.fsm.on('saving', angular.bind(this, this.onSave));
   this.fsm.on('closed', angular.bind(this, this.onClose));
 
