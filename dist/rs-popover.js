@@ -4,6 +4,7 @@ angular.module('rs.popover', []).run(function () {
   var styleContent, styleTag;
 
   styleContent = document.createTextNode('.rs-popover-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; opacity: 0 } \
+    .rs-popover-content { display: block; } \
     .rs-popover-loading, .rs-popover-error { width: 200px; height: 140px } \
     .rs-popover-error { color: #c40022 } \
     .rs-popover-message { width: 100%; position: absolute; top: 50%; left: 50%; -moz-transform: translate(-50%, -50%); -ms-transform: translate(-50%, -50%); -webkit-transform: translate(-50%, -50%); transform: translate(-50%, -50%); text-align: center; } \
@@ -26,18 +27,18 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('rsPopover.html',
-    '<div class="rs-popover-wrapper" ng-hide="is(\'closed\')">\n' +
-    '  <div class="rs-popover-overlay" ng-click="close()"></div>\n' +
+    '<div class="rs-popover-wrapper" ng-hide="ctrl.is(\'closed\')">\n' +
+    '  <div class="rs-popover-overlay" ng-click="ctrl.close()"></div>\n' +
     '  <div class="rs-popover">\n' +
-    '    <div ng-class="{{ styles }}"></div>\n' +
+    '    <div ng-class="ctrl.arrow()"></div>\n' +
     '    <div class="rs-popover-content">\n' +
-    '      <div class="rs-popover-error" ng-show="is(\'error\')">\n' +
-    '        <div class="rs-popover-message">{{ state.message }}</div>\n' +
+    '      <div class="rs-popover-loading" ng-show="ctrl.is(\'opening\')">\n' +
+    '        <div class="rs-popover-message">Loading&hellip;</div>\n' +
     '      </div>\n' +
-    '      <div class="rs-popover-loading" ng-show="is(\'loading\')">\n' +
-    '        <div class="rs-popover-message">{{ state.message }}</div>\n' +
+    '      <div class="rs-popover-error" ng-show="ctrl.is(\'openingFailed\')">\n' +
+    '        <div class="rs-popover-message">{{ ctrl.error() }}</div>\n' +
     '      </div>\n' +
-    '      <div class="rs-popover-body" ng-show="is(\'open\')" ng-transclude></div>\n' +
+    '      <div class="rs-popover-body" ng-show="ctrl.is(\'open\')" ng-transclude></div>\n' +
     '    </div>\n' +
     '  </div>\n' +
     '</div>\n' +
@@ -88,23 +89,23 @@ try {
 }
 module.run(['$templateCache', function($templateCache) {
   $templateCache.put('rsPopoverForm.html',
-    '<div class="rs-popover-wrapper" ng-hide="is(\'closed\')">\n' +
-    '  <div class="rs-popover-overlay" ng-click="close()"></div>\n' +
+    '<div class="rs-popover-wrapper" ng-hide="ctrl.is(\'closed\')">\n' +
+    '  <div class="rs-popover-overlay" ng-click="ctrl.close()"></div>\n' +
     '  <div class="rs-popover">\n' +
-    '    <div ng-class="{{ styles }}"></div>\n' +
+    '    <div ng-class="ctrl.arrow()"></div>\n' +
     '    <form name="form" class="rs-popover-content" novalidate>\n' +
-    '      <div class="rs-popover-error" ng-show="is(\'error\')">\n' +
-    '        <div class="rs-popover-message">{{ state.message }}</div>\n' +
+    '      <div class="rs-popover-loading" ng-show="ctrl.is(\'opening\')">\n' +
+    '        <div class="rs-popover-message">Loading&hellip;</div>\n' +
     '      </div>\n' +
-    '      <div class="rs-popover-loading" ng-show="is(\'loading\')">\n' +
-    '        <div class="rs-popover-message">{{ state.message }}</div>\n' +
+    '      <div class="rs-popover-error" ng-show="ctrl.is(\'openingFailed\')">\n' +
+    '        <div class="rs-popover-message">{{ ctrl.error() }}</div>\n' +
     '      </div>\n' +
-    '      <div class="rs-popover-body" ng-show="is(\'open\') || is(\'saving\') || is(\'failed\')" ng-transclude></div>\n' +
-    '      <div class="rs-popover-footer rs-btn-group" ng-show="is(\'open\') || is(\'saving\') || is(\'failed\')">\n' +
-    '        <button class="rs-btn rs-btn-primary" ng-disabled="is(\'saving\')" ng-click="save()">{{ saveLabel || \'Save\' }}</button>\n' +
-    '        <button class="rs-btn rs-btn-link" ng-hide="is(\'saving\') || is(\'failed\')" ng-click="close()">{{ cancelLabel || \'Cancel\' }}</button>\n' +
-    '        <span class="rs-status-error" ng-show="is(\'failed\')">{{ state.message }}</span>\n' +
-    '        <i class="rs-processing-indicator" ng-show="is(\'saving\')"></i>\n' +
+    '      <div class="rs-popover-body" ng-show="ctrl.is(\'open\') || ctrl.is(\'saving\') || ctrl.is(\'savingFailed\')" ng-transclude></div>\n' +
+    '      <div class="rs-popover-footer rs-btn-group" ng-show="ctrl.is(\'open\') || ctrl.is(\'saving\') || ctrl.is(\'savingFailed\')">\n' +
+    '        <button class="rs-btn rs-btn-primary" ng-disabled="ctrl.is(\'saving\')" ng-click="ctrl.save()">{{ saveLabel || \'Save\' }}</button>\n' +
+    '        <button class="rs-btn rs-btn-link" ng-hide="ctrl.is(\'saving\') || ctrl.is(\'savingFailed\')" ng-click="ctrl.close()">{{ cancelLabel || \'Cancel\' }}</button>\n' +
+    '        <span class="rs-status-error" ng-show="ctrl.is(\'savingFailed\')">{{ ctrl.error() }}</span>\n' +
+    '        <i class="rs-processing-indicator" ng-show="ctrl.is(\'saving\')"></i>\n' +
     '      </div>\n' +
     '    </form>\n' +
     '  </div>\n' +
@@ -113,27 +114,14 @@ module.run(['$templateCache', function($templateCache) {
 }]);
 })();
 
-angular.module('rs.popover').factory('focus', ["$timeout", function ($timeout) {
+angular.module('rs.popover').factory('form', ["$timeout", function ($timeout) {
   'use strict';
 
-  return function focus(element, invokeApply) {
-    return $timeout(function () {
-      var focusableElement;
-
-      focusableElement = element.find(':input').first();
-      focusableElement.focus();
-    }, 0, invokeApply || false);
-  };
-}]);
-
-angular.module('rs.popover').factory('form', function () {
-  'use strict';
-
-  function reset(element, form) {
+  function reset(form) {
     form.$setPristine();
   }
 
-  function validate(element) {
+  function validate(form, element) {
     element = angular.element(element);
     element.find(':input').each(function (i, element) {
       var controller;
@@ -160,151 +148,205 @@ angular.module('rs.popover').factory('form', function () {
 
       controller.$commitViewValue();
     });
+
+    return form.$valid;
+  }
+
+  function focus(element, invokeApply) {
+    return $timeout(function () {
+      var focusableElement;
+
+      focusableElement = element.find(':input').first();
+      focusableElement.focus();
+    }, 0, invokeApply || false);
   }
 
   return {
     reset: reset,
-    validate: validate
+    validate: validate,
+    focus: focus
   };
-});
+}]);
 
-angular.module('rs.popover').controller('PopoverController', ["$scope", "$element", "registry", "form", "tether", "focus", "PopoverState", function ($scope, $element, registry, form, tether, focus, PopoverState) {
+angular.module('rs.popover').controller('PopoverController', ["$scope", "$element", "$q", "PopoverStateMachine", "form", "registry", "tether", function ($scope, $element, $q, PopoverStateMachine, form, registry, tether) {
   'use strict';
 
-  function resetState() {
-    var state;
+  function executeHook(self, hook, fsm, ctx) {
+    var result;
 
-    state = new PopoverState();
-    state.on('open', $scope.onOpen || angular.noop);
-    state.on('save', $scope.onSave || angular.noop);
-    state.on('close', resetState);
-    state.on('close', function () {
-      form.reset($element, $scope.form);
-    });
-    state.on('load', function () {
-      focus($element);
-    });
+    hook = hook || angular.noop;
+    result = hook(ctx.data);
 
-    $scope.state = state;
+    return $q.when(result).then(function () {
+      fsm.finish();
+    }, function (err) {
+      self.errorMessage = err.toString();
+      fsm.fail();
+    });
   }
 
-  this.id = $scope.id;
-  registry.register($scope.id, $scope);
-  resetState();
-
-  $scope.styles = {
-    'rs-popover-arrow': true,
-    'rs-popover-arrow-top-left': $scope.attach === 'top-left',
-    'rs-popover-arrow-left-top': $scope.attach === 'left-top'
+  this.is = function (state) {
+    return this.fsm.is(state);
   };
+
+  this.open = function (target, corner, data) {
+    this.fsm.setContext({ element: $element, target: target, corner: corner, data: data });
+    this.fsm.open();
+  };
+
+  this.save = function () {
+    if (form.validate($scope.form, $element)) {
+      this.fsm.save();
+    }
+  };
+
+  this.close = function () {
+    this.fsm.close();
+  };
+
+  this.toggle = function () {
+    var handler;
+
+    handler = this.is('closed') ? this.open : this.close;
+    handler.apply(this, arguments);
+  };
+
+  this.arrow = function () {
+    var context, corner;
+
+    context = this.fsm.context;
+    corner = context.corner;
+
+    return {
+      'rs-popover-arrow': true,
+      'rs-popover-arrow-top-left': corner === 'top-left',
+      'rs-popover-arrow-left-top': corner === 'left-top'
+    };
+  };
+
+  this.error = function () {
+    return this.errorMessage;
+  };
+
+  this.onOpen = function (fsm, ctx) {
+    tether.attach(ctx.element, ctx.target, ctx.corner);
+
+    return executeHook(this, $scope.onOpen, fsm, ctx);
+  };
+
+  this.onLoad = function (fsm, ctx) {
+    form.focus(ctx.element);
+  };
+
+  this.onSave = function (fsm, ctx) {
+    return executeHook(this, $scope.onSave, fsm, ctx);
+  };
+
+  this.onClose = function (fsm, ctx) {
+    if ($scope.form) {
+      form.reset($scope.form);
+    }
+
+    tether.detach(ctx.element);
+  };
+
+  this.id = $scope.id;
+  this.fsm = new PopoverStateMachine();
+  this.fsm.on('opening', angular.bind(this, this.onOpen));
+  this.fsm.on('open', angular.bind(this, this.onLoad));
+  this.fsm.on('saving', angular.bind(this, this.onSave));
+  this.fsm.on('closed', angular.bind(this, this.onClose));
+
+  registry.register(this.id, this);
 
   $scope.$on('$destroy', function () {
     registry.deregister($scope.id);
   });
-
-  $scope.is = function (state) {
-    return $scope.state.is(state);
-  };
-
-  $scope.open = function (target) {
-    $scope.state.open();
-    tether.attach($element, target, $scope.attach);
-  };
-
-  $scope.close = function () {
-    $scope.state.close();
-  };
-
-  $scope.toggle = function (target) {
-    if ($scope.state.is('closed')) {
-      $scope.open(target);
-    } else {
-      $scope.close();
-    }
-  };
-
-  $scope.save = function () {
-    form.validate($element, $scope.form);
-
-    if ($scope.form.$valid) {
-      $scope.state.save();
-    }
-  };
 }]);
 
-
-angular.module('rs.popover').factory('PopoverState', ["$q", function ($q) {
+angular.module('rs.popover').factory('PopoverStateMachine', ["$q", function ($q) {
   'use strict';
 
-  function PopoverState() {
-    this.state = PopoverState.CLOSED;
-    this.subscriptions = { open: [], load: [], error: [], save: [], fail: [], close: [] };
+  var OPENING = 'opening';
+  var OPENING_FAILED = 'openingFailed';
+  var OPEN = 'open';
+  var SAVING = 'saving';
+  var SAVING_FAILED = 'savingFailed';
+  var CLOSED = 'closed';
+
+  function PopoverStateMachine() {
+    this.context = {};
+    this.state = CLOSED;
+
+    this.subscriptions = {};
+    this.subscriptions[OPENING] = [];
+    this.subscriptions[OPENING_FAILED] = [];
+    this.subscriptions[OPEN] = [];
+    this.subscriptions[SAVING] = [];
+    this.subscriptions[SAVING_FAILED] = [];
+    this.subscriptions[CLOSED] = [];
   }
 
-  PopoverState.prototype.is = function (state) {
+  PopoverStateMachine.prototype.setContext = function (context) {
+    this.context = context;
+  };
+
+  PopoverStateMachine.prototype.is = function (state) {
     return this.state === state;
   };
 
-  PopoverState.prototype.on = function (e, handler) {
+  PopoverStateMachine.prototype.on = function (e, handler) {
     this.subscriptions[e].push(handler);
   };
 
-  PopoverState.prototype.fire = function (e) {
+  PopoverStateMachine.prototype.transition = function (state) {
     var promises = [];
 
-    angular.forEach(this.subscriptions[e], function (handler) {
-      promises.push(handler());
-    });
+    this.state = state;
+    this.subscriptions[state].forEach(function (handler) {
+      promises.push(handler(this, this.context));
+    }, this);
 
     return $q.all(promises);
   };
 
-  PopoverState.prototype.open = function () {
-    this.message = 'Loading…';
-    this.state = PopoverState.LOADING;
-    this.fire('open')
-      .then(angular.bind(this, this.load))
-      .catch(angular.bind(this, this.error));
+  PopoverStateMachine.prototype.open = function () {
+    if (this.is(CLOSED) || this.is(OPENING_FAILED)) {
+      this.transition(OPENING);
+    }
   };
 
-  PopoverState.prototype.load = function () {
-    this.state = PopoverState.OPEN;
-    this.fire('load');
+  PopoverStateMachine.prototype.save = function () {
+    if (this.is(OPEN) || this.is(SAVING_FAILED)) {
+      this.transition(SAVING);
+    }
   };
 
-  // TODO: This should accept an error instead of a message.
-  PopoverState.prototype.error = function (message) {
-    this.message = message;
-    this.state = PopoverState.ERROR;
-    this.fire('error');
+  PopoverStateMachine.prototype.finish = function () {
+    if (this.is(OPENING)) {
+      this.transition(OPEN);
+    } else if (this.is(SAVING)) {
+      this.transition(CLOSED);
+    }
   };
 
-  PopoverState.prototype.save = function () {
-    this.state = PopoverState.SAVING;
-    this.fire('save')
-      .then(angular.bind(this, this.close))
-      .catch(angular.bind(this, this.fail));
+  PopoverStateMachine.prototype.fail = function () {
+    if (this.is(OPENING)) {
+      this.transition(OPENING_FAILED);
+    } else if (this.is(SAVING)) {
+      this.transition(SAVING_FAILED);
+    }
   };
 
-  PopoverState.prototype.fail = function (error) {
-    this.message = error.toString();
-    this.state = PopoverState.FAILED;
-    this.fire('fail');
+  PopoverStateMachine.prototype.close = function () {
+    if (this.is(SAVING)) {
+      return;
+    }
+
+    this.transition(CLOSED);
   };
 
-  PopoverState.prototype.close = function () {
-    this.state = PopoverState.CLOSED;
-    this.fire('close');
-  };
-
-  PopoverState.CLOSED = 'closed';
-  PopoverState.LOADING = 'loading';
-  PopoverState.OPEN = 'open';
-  PopoverState.ERROR = 'error';
-  PopoverState.SAVING = 'saving';
-  PopoverState.FAILED = 'failed';
-
-  return PopoverState;
+  return PopoverStateMachine;
 }]);
 
 angular.module('rs.popover').factory('registry', function () {
@@ -349,16 +391,13 @@ angular.module('rs.popover').directive('rsPopover', function () {
   return {
     scope: {
       id: '@',
-      attach: '@',
       onOpen: '='
     },
     restrict: 'EA',
     controller: 'PopoverController',
+    controllerAs: 'ctrl',
     transclude: true,
-    templateUrl: 'rsPopover.html',
-    compile: function (element, attributes) {
-      attributes.attach = attributes.attach || 'top-left';
-    }
+    templateUrl: 'rsPopover.html'
   };
 });
 
@@ -368,7 +407,6 @@ angular.module('rs.popover').directive('rsPopoverForm', function () {
   return {
     scope: {
       id: '@',
-      attach: '@',
       saveLabel: '@',
       cancelLabel: '@',
       onOpen: '=',
@@ -376,15 +414,13 @@ angular.module('rs.popover').directive('rsPopoverForm', function () {
     },
     restrict: 'EA',
     controller: 'PopoverController',
+    controllerAs: 'ctrl',
     transclude: true,
-    templateUrl: 'rsPopoverForm.html',
-    compile: function (element, attributes) {
-      attributes.attach = attributes.attach || 'top-left';
-    }
+    templateUrl: 'rsPopoverForm.html'
   };
 });
 
-angular.module('rs.popover').directive('rsPopoverTrigger', ["registry", function (registry) {
+angular.module('rs.popover').directive('rsPopoverTrigger', ["registry", "Attachment", function (registry, Attachment) {
   'use strict';
 
   function findPopoverId(attrs, popoverController) {
@@ -405,19 +441,37 @@ angular.module('rs.popover').directive('rsPopoverTrigger', ["registry", function
     return element;
   }
 
+  function findPopoverCorner(attrs) {
+    if (attrs.rsPopoverAttach) {
+      return attrs.rsPopoverAttach;
+    }
+
+    return Attachment.TOP_LEFT;
+  }
+
+  function evalPopoverData(scope, attrs) {
+    if (attrs.rsPopoverData) {
+      return scope.$eval(attrs.rsPopoverData);
+    }
+
+    return {};
+  }
+
   return {
     restrict: 'A',
     require: '?^rsPopover',
     link: function (scope, element, attrs, popoverController) {
-      var id, target;
+      var id, target, corner, data;
 
       id = findPopoverId(attrs, popoverController);
       target = findPopoverTarget(element, attrs);
+      corner = findPopoverCorner(attrs);
+      data = evalPopoverData(scope, attrs);
 
       element.on('click', function (e) {
         e.preventDefault();
 
-        registry.popover(id).toggle(target);
+        registry.popover(id).toggle(target, corner, data);
         scope.$apply();
       });
     }

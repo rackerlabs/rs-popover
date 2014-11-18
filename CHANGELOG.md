@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## v0.3.0 (November 18, 2014)
+
+- BREAKING: Move attach property to rs-popover-trigger.
+- BREAKING: Move functionality from focus service into form service.
+- BREAKING: Change argument order for form service methods to be consistent.
+- BREAKING: Change method signature when controlling popovers programmatically.
+- Allow popover targets to be specified by ID.
+- Allow custom data to be passed into popover hooks.
+- Prevent popover from being dismissed while saving.
+- Stop trying to reset validation state on popovers without forms.
+- Show processing indicator when saving.
+- Upgrade Angular dependency to ~1.3.0.
+
 ## v0.2.4 (October 18, 2014)
 
 - Show error message when on-save hook is rejected.
