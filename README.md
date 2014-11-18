@@ -24,7 +24,14 @@ To install with Bower, add the following line to dependencies in your bower.json
 "rs-popover": "https://github.com/rackerlabs/rs-popover.git"
 ```
 
+Once you have installed the package, you'll need to:
+
+1. Include `rs-popover.js` or `rs-popover.min.js` in your application.
+2. Add `rs.popover` to your main module's list of dependencies.
+
 ## Usage
+
+
 
 ### `rs-popover`
 
