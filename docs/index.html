@@ -70,14 +70,12 @@
 
   angular.module('rsPopoverDemo', ['rs.popover']).controller('DemoController', function ($scope, $timeout, $q, registry) {
     $scope.load = function (data) {
-      console.log(data);
       return $timeout(function () {
         // throw $q.reject();
       }, 1000);
     };
 
     $scope.save = function (data) {
-      console.log(data);
       return $timeout(function () {
         // return $q.reject('oops');
       }, 1000);
