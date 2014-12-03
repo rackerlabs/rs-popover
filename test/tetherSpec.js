@@ -16,12 +16,6 @@ describe('rs.popover.tether', function () {
   }));
 
   describe('attach', function () {
-    it('triggers reposition when scroll occurs', function () {
-      $window.triggerHandler('scroll');
-
-      expect(attachment.position).toHaveBeenCalled();
-    });
-
     it('triggers reposition when window resizes', function () {
       $window.triggerHandler('resize');
 
@@ -33,7 +27,7 @@ describe('rs.popover.tether', function () {
     it('does not trigger reposition after being detached', function () {
       tether.detach(element);
 
-      $window.triggerHandler('scroll');
+      $window.triggerHandler('resize');
 
       expect(attachment.position).not.toHaveBeenCalled();
     });
