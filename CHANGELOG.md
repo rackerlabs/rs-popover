@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## v0.3.1 (December 4, 2014)
+
+- Fix scrolling when popover is positioned off screen.
+
 ## v0.3.0 (November 18, 2014)
 
 - BREAKING: Move attach property to rs-popover-trigger.
