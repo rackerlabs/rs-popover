@@ -13,7 +13,8 @@ angular.module('rs.popover').directive('rsPopoverTrigger', function (registry, A
 
   function findPopoverTarget(element, attrs) {
     if (attrs.rsPopoverTarget) {
-      return angular.element('#' + attrs.rsPopoverTarget);
+      var target = document.getElementById(attrs.rsPopoverTarget);
+      return angular.element(target);
     }
 
     return element;
@@ -55,4 +56,3 @@ angular.module('rs.popover').directive('rsPopoverTrigger', function (registry, A
     }
   };
 });
-
