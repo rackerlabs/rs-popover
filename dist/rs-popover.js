@@ -256,6 +256,7 @@ angular.module('rs.popover').controller('PopoverController', ["$scope", "$elemen
   this.fsm.on('open', angular.bind(this, this.onLoad));
   this.fsm.on('saving', angular.bind(this, this.onSave));
   this.fsm.on('closed', angular.bind(this, this.onClose));
+  this.$parent = $scope.$parent;
 
   registry.register(this.id, this);
 
