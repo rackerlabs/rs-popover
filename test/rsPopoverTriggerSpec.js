@@ -38,11 +38,11 @@ describe('rs.popover.rsPopoverTrigger', function () {
   });
 
   describe('rs-popover-target', function () {
-    it('points popover at specified element', inject(function ($compile) {
+    it('points popover at specified element, locating it at click-event-time', inject(function ($compile) {
       var element, target;
 
-      angular.element('body').append('<div id="target"></div>');
       element = $compile('<a rs-popover-trigger="mypopover" rs-popover-target="target"></a>')(scope);
+      angular.element('body').append('<div id="target"></div>');
       scope.$digest();
 
       element.triggerHandler('click');

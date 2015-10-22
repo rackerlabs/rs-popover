@@ -39,15 +39,16 @@ angular.module('rs.popover').directive('rsPopoverTrigger', function (registry, A
     restrict: 'A',
     require: '?^rsPopover',
     link: function (scope, element, attrs, popoverController) {
-      var id, target, corner, data;
+      var id, corner, data;
 
       id = findPopoverId(attrs, popoverController);
-      target = findPopoverTarget(element, attrs);
       corner = findPopoverCorner(attrs);
       data = evalPopoverData(scope, attrs);
 
       element.on('click', function (e) {
         e.preventDefault();
+
+        var target = findPopoverTarget(element, attrs);
 
         registry.popover(id).toggle(target, corner, data);
         scope.$apply();
